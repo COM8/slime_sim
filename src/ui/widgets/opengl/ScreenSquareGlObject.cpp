@@ -53,7 +53,7 @@ void ScreenSquareGlObject::init_internal() {
 
     // Bind attributes:
     glUseProgram(shaderProg);
-    glUniform1i(glGetUniformLocation(shaderProg, "slimeTexture"), 1);
+    glUniform1i(glGetUniformLocation(shaderProg, "slimeTexture"), 0);
 
     textureSizeConst = glGetUniformLocation(shaderProg, "textureSize");
     glUniform2f(textureSizeConst, width, height);

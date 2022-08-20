@@ -126,7 +126,10 @@ void SimulationSettingsBarWidget::on_zoom_reset_clicked() {
 
 void SimulationSettingsBarWidget::on_zoom_fit_clicked() {
     assert(simWidget);
-    simWidget->set_zoom_factor(1.0);
+    float zoomX = static_cast<float>(simWidget->get_width()) / RESOLUTION_X;
+    float zoomY = static_cast<float>(simWidget->get_height()) / RESOLUTION_Y;
+    float zoomFactor = zoomX > zoomY ? zoomY : zoomX;
+    simWidget->set_zoom_factor(zoomFactor);
     zoomInBtn.set_sensitive(true);
 }
 

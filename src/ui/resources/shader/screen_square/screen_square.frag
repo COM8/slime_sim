@@ -28,5 +28,5 @@ void main()
     vec4 texSlimeColor = texture(slimeTexture, scaledCoords);
 
     // Layer textures:
-    outColor += texSlimeColor;
+    outColor = texSlimeColor;
 }

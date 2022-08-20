@@ -56,8 +56,8 @@ void SimulationWidget::init_slimes() {
         slimes->emplace_back(opengl::Slime(
             opengl::Rgba::random_color(),
             opengl::Vec4U::random_vec(),
-            opengl::Vec2::random_vec(0, 0, RESOLUTION_X, RESOLUTION_Y),
-            opengl::Vec2::random_vec(0, 0, RESOLUTION_X, RESOLUTION_Y),
+            opengl::Vec2::random_vec(0, RESOLUTION_X, 0, RESOLUTION_Y),
+            opengl::Vec2::random_vec(0, RESOLUTION_X, 0, RESOLUTION_Y),
             0));
     }
 }
@@ -99,7 +99,7 @@ bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*c
         slimeFrameBuffer.bind();
         // 1.1 Blur old slime image:
         if (blur) {
-            blurObject.render();
+            // blurObject.render();
         } else {
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
