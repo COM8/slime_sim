@@ -99,7 +99,7 @@ bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*c
         slimeFrameBuffer.bind();
         // 1.1 Blur old slime image:
         if (blur) {
-            // blurObject.render();
+            blurObject.render();
         } else {
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -158,6 +158,7 @@ void SimulationWidget::on_realized() {
         blurObject.set_texture_size(slimeFrameBuffer.get_texture_size_x(), slimeFrameBuffer.get_texture_size_y());
         blurObject.init();
         blurObject.bind_texture(slimeFrameBuffer.get_texture());
+        slimeObj.set_slime_texture(slimeFrameBuffer.get_texture());
         slimeObj.init();
         screenSquareObj.bind_texture(slimeFrameBuffer.get_texture());
         screenSquareObj.init();

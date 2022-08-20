@@ -1,0 +1,24 @@
+#version 450 core
+
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+layout(rgba32f, binding = 0) uniform image2D slimeImg;
+
+struct SlimeDescriptor {
+    vec4 color; // Offset: 0-15
+    uvec4 randState; // Offset 16-31
+    vec2 pos; // Offset: 32-39
+    vec2 padding; // Offset: 40-47
+    vec2 direction; // Offset: 48-55
+    uint initialized; // Offset: 56-59
+    uint padding1; // Offset: 60-63
+}; // Size will be rounded up to the next multiple of the largest member (vec4) -> 64 Bytes
+
+layout(std430, binding = 1) buffer bufSlime { SlimeDescriptor slimes[]; };
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+    ivec2 texelCoord = ivec2(round(slimes[index].pos.x), round(slimes[index].pos.y));
+    imageStore(slimeImg, texelCoord, slimes[index].color);
+
+}

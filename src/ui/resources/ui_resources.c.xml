@@ -3,9 +3,7 @@
   <gresource prefix="/ui/">
     <file>theme.css</file>
 
-    <file>shader/slime/slime.frag</file>
-    <file>shader/slime/slime.vert</file>
-    <file>shader/slime/slime.geom</file>
+    <file>shader/slime/slime.comp</file>
     <file>shader/screen_square/screen_square.vert</file>
     <file>shader/screen_square/screen_square.frag</file>
     <file>shader/screen_square/screen_square.geom</file>

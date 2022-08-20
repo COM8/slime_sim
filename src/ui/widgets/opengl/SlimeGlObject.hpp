@@ -9,15 +9,13 @@
 namespace ui::widgets::opengl {
 class SlimeGlObject : public AbstractGlObject {
  private:
-    GLuint vertShader{0};
-    GLuint geomShader{0};
-    GLuint fragShader{0};
-
-    GLint worldSizeConst{0};
-    GLint rectSizeConst{0};
+    GLuint compShader{0};
 
     const float width;
     const float height;
+
+    GLuint slimeTexture{0};
+    GLuint slimeSSBO{0};
 
     std::shared_ptr<std::vector<opengl::Slime>> slimes{nullptr};
 
@@ -31,7 +29,7 @@ class SlimeGlObject : public AbstractGlObject {
     SlimeGlObject& operator=(SlimeGlObject& other) = delete;
     SlimeGlObject& operator=(SlimeGlObject&& old) = delete;
 
-    void set_slimes(const std::shared_ptr<std::vector<opengl::Slime>>& slimes);
+    void set_slime_texture(GLuint slimeTexture);
 
  protected:
     void init_internal() override;

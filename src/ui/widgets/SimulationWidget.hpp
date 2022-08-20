@@ -15,8 +15,8 @@
 #include <gtkmm/scrolledwindow.h>
 
 namespace ui::widgets {
-constexpr GLsizei RESOLUTION_X = 8192;
-constexpr GLsizei RESOLUTION_Y = 8192;
+constexpr GLsizei RESOLUTION_X = 2560;
+constexpr GLsizei RESOLUTION_Y = 1440;
 
 constexpr GLsizei NUM_SLIMES = 8192;
 

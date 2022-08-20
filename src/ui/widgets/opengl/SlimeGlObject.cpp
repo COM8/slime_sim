@@ -9,24 +9,24 @@ SlimeGlObject::SlimeGlObject(std::shared_ptr<std::vector<opengl::Slime>>& slimes
                                                                                                                height(height),
                                                                                                                slimes(slimes) {}
 
+void SlimeGlObject::set_slime_texture(GLuint slimeTexture) {
+    this->slimeTexture = slimeTexture;
+}
+
 void SlimeGlObject::init_internal() {
-    // Vertex data:
+    // Slime data:
     assert(slimes);
-    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(opengl::Slime) * slimes->size()), static_cast<void*>(slimes->data()), GL_DYNAMIC_DRAW);
+    glGenBuffers(1, &slimeSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, slimeSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(opengl::Slime) * slimes->size()), static_cast<void*>(slimes->data()), GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, slimeSSBO);
 
     // Compile shader:
-    vertShader = compile_shader("/ui/shader/slime/slime.vert", GL_VERTEX_SHADER);
-    assert(vertShader > 0);
-    geomShader = compile_shader("/ui/shader/slime/slime.geom", GL_GEOMETRY_SHADER);
-    assert(geomShader > 0);
-    fragShader = compile_shader("/ui/shader/slime/slime.frag", GL_FRAGMENT_SHADER);
-    assert(fragShader > 0);
+    compShader = compile_shader("/ui/shader/slime/slime.comp", GL_COMPUTE_SHADER);
+    assert(compShader > 0);
 
     // Prepare program:
-    glAttachShader(shaderProg, vertShader);
-    glAttachShader(shaderProg, geomShader);
-    glAttachShader(shaderProg, fragShader);
-    glBindFragDataLocation(shaderProg, 0, "outColor");
+    glAttachShader(shaderProg, compShader);
     glLinkProgram(shaderProg);
     GLERR;
 
@@ -44,39 +44,30 @@ void SlimeGlObject::init_internal() {
         glDeleteProgram(shaderProg);
         shaderProg = 0;
     } else {
-        glDetachShader(shaderProg, fragShader);
-        glDetachShader(shaderProg, geomShader);
-        glDetachShader(shaderProg, vertShader);
+        glDetachShader(shaderProg, compShader);
     }
     GLERR;
 
     // Bind attributes:
-    glUseProgram(shaderProg);
-    GLint colAttrib = glGetAttribLocation(shaderProg, "color");
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 4, GL_FLOAT, GL_FALSE, sizeof(Slime), nullptr);
-
-    GLint posAttrib = glGetAttribLocation(shaderProg, "position");
-    glEnableVertexAttribArray(posAttrib);
-    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Slime), reinterpret_cast<void*>(sizeof(Rgba) + sizeof(Vec4U)));
-
-    worldSizeConst = glGetUniformLocation(shaderProg, "worldSize");
-    glUniform2f(worldSizeConst, width, height);
-
-    rectSizeConst = glGetUniformLocation(shaderProg, "rectSize");
-    glUniform2f(rectSizeConst, 10, 10);
+    glUniform1i(glGetUniformLocation(shaderProg, "slimeTexture"), 0);
     GLERR;
 }
 
 void SlimeGlObject::render_internal() {
     assert(slimes);
-    glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(slimes->size()));
+
+    glBindImageTexture(0, slimeTexture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+    GLERR;
+
+    // Execute the compute shader:
+    glDispatchCompute(static_cast<GLuint>(slimes->size()), 1, 1);
+    GLERR;
+    // make sure writing to image has finished before read
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    GLERR;
 }
 
 void SlimeGlObject::cleanup_internal() {
-    glDeleteShader(fragShader);
-    glDeleteShader(geomShader);
-    glDeleteShader(fragShader);
+    glDeleteShader(compShader);
 }
 }  // namespace ui::widgets::opengl
