@@ -15,10 +15,125 @@ struct SlimeDescriptor {
 }; // Size will be rounded up to the next multiple of the largest member (vec4) -> 64 Bytes
 
 layout(std430, binding = 1) buffer bufSlime { SlimeDescriptor slimes[]; };
+layout(std430, binding = 2) buffer bufAttr {
+    int worldSizeX;
+    int worldSizeY;
+};
+
+bool check_border_collision(uint index) {
+    bool collision = false;
+    if(slimes[index].pos.x > worldSizeX) {
+        slimes[index].pos.x = worldSizeX;
+        slimes[index].direction = reflect(slimes[index].direction, vec2(1, 0));
+        collision = true;
+    }
+    else if(slimes[index].pos.x < 0) {
+        slimes[index].pos.x = 0;
+        slimes[index].direction = reflect(slimes[index].direction, vec2(1, 0));
+        collision = true;
+    }
+
+    if(slimes[index].pos.y > worldSizeY) {
+        slimes[index].pos.y = worldSizeY;
+        slimes[index].direction = reflect(slimes[index].direction, vec2(0, 1));
+        collision = true;
+    }
+    else if(slimes[index].pos.y < 0) {
+        slimes[index].pos.y = 0;
+        slimes[index].direction = reflect(slimes[index].direction, vec2(0, 1));
+        collision = true;
+    }
+    return collision;
+}
+
+// ------------------------------------------------------------------------------------
+// 128 Bit XOR-Shift
+// Source: https://en.wikipedia.org/wiki/Xorshift
+// ------------------------------------------------------------------------------------
+uint next(inout uvec4 state) {
+	uint t = state.w;
+    uint s = state.x;
+	state.w = state.z;
+	state.z = state.y;
+	state.y = s;
+
+	t ^= t << 11;
+	t ^= t >> 8;
+    state.x = t ^ s ^ (s >> 19);
+	return state.x;
+}
+
+float next_float(inout uvec4 state) {
+    // Division from: https://www.reedbeta.com/blog/quick-and-easy-gpu-random-numbers-in-d3d11/
+    return float(next(state)) * (1.0 / 4294967296.0);
+}
+
+uint next(inout uvec4 state, uint min, uint max) {
+    return uint(round(float(min) + (next_float(state) * float(max - min))));
+}
+
+// ------------------------------------------------------------------------------------
+vec2 rotate(vec2 v, float a) {
+	float s = sin(a);
+	float c = cos(a);
+	mat2 m = mat2(c, -s, s, c);
+	return m * v;
+}
+
+float dot_product(vec2 v1, vec2 v2) {
+    return (v1.x * v2.x) + (v1.y * v2.y);
+}
+
+float NC_PI = 3.1415926;
+float get_vec_dist_degree(vec2 v1, vec2 v2) {
+    float dotProd = dot_product(v1, v2);
+    float angle = acos((dotProd/(length(v1)*length(v2))));
+    return angle * (180/NC_PI);
+}
+
+void move(uint index) {
+    ivec2 bestGoal = ivec2(0);
+    vec4 bestPixel = vec4(0);
+
+    for(float x = -1; x <= 1; x++) {
+        for(float y = -1; y <= 1; y++) {
+            if(!(x == 0 && y == 0)) {
+                ivec2 texelCoord = ivec2(round(slimes[index].pos.x + x), round(slimes[index].pos.y + y));
+                vec4 pixel = imageLoad(slimeImg, texelCoord);
+                if(pixel.w > bestPixel.w) {
+                    bestPixel = pixel;
+                    bestGoal = texelCoord;
+                }
+            }
+        }
+    }
+
+    if(bestPixel.w > 0) {
+        float angel = get_vec_dist_degree(slimes[index].direction, bestGoal) * 0.05;
+        slimes[index].direction = rotate(slimes[index].direction, angel);
+    }
+    slimes[index].pos += slimes[index].direction;
+    check_border_collision(index);
+}
+
+void draw(uint index) {
+    ivec2 texelCoord = ivec2(round(slimes[index].pos.x), round(slimes[index].pos.y));
+    imageStore(slimeImg, texelCoord, slimes[index].color);
+}
+
+void init(uint index) {
+    slimes[index].direction = vec2(next_float(slimes[index].randState), next_float(slimes[index].randState));
+}
 
 void main() {
     uint index = gl_GlobalInvocationID.x;
-    ivec2 texelCoord = ivec2(round(slimes[index].pos.x), round(slimes[index].pos.y));
-    imageStore(slimeImg, texelCoord, slimes[index].color);
 
+    if(slimes[index].initialized == 0) {
+        init(index);
+        slimes[index].initialized = 1;
+        return;
+    }
+
+    move(index);
+    draw(index);
 }

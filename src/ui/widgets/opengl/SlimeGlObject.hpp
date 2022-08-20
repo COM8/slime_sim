@@ -16,6 +16,7 @@ class SlimeGlObject : public AbstractGlObject {
 
     GLuint slimeTexture{0};
     GLuint slimeSSBO{0};
+    GLuint attribSSBO{0};
 
     std::shared_ptr<std::vector<opengl::Slime>> slimes{nullptr};
 

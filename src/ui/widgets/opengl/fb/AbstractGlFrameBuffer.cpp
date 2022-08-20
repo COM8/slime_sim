@@ -24,7 +24,7 @@ void AbstractGlFrameBuffer::init() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    std::array<float, 4> borderColor{0.5F, 0.5F, 0.0F, 1.0F};
+    std::array<float, 4> borderColor{0.0F, 0.0F, 0.0F, 0.0F};
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor.data());
     GLERR;
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, sizeX, sizeY);

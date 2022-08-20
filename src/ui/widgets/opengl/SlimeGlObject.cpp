@@ -2,6 +2,8 @@
 #include "SlimeGlObject.hpp"
 #include "ui/widgets/opengl/Slime.hpp"
 #include <cassert>
+#include <cstdint>
+#include <vector>
 #include <epoxy/gl_generated.h>
 
 namespace ui::widgets::opengl {
@@ -20,6 +22,13 @@ void SlimeGlObject::init_internal() {
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, slimeSSBO);
     glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(opengl::Slime) * slimes->size()), static_cast<void*>(slimes->data()), GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, slimeSSBO);
+
+    // Attributes:
+    glGenBuffers(1, &attribSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, attribSSBO);
+    std::vector<int32_t> attr{static_cast<int32_t>(width), static_cast<int32_t>(height)};
+    glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(int32_t) * attr.size()), static_cast<void*>(attr.data()), GL_STATIC_READ);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, attribSSBO);
 
     // Compile shader:
     compShader = compile_shader("/ui/shader/slime/slime.comp", GL_COMPUTE_SHADER);
