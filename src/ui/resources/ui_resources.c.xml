@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/ui/">
+    <file>theme.css</file>
+
+    <file>shader/slime/slime.frag</file>
+    <file>shader/slime/slime.vert</file>
+    <file>shader/slime/slime.geom</file>
+    <file>shader/screen_square/screen_square.vert</file>
+    <file>shader/screen_square/screen_square.frag</file>
+    <file>shader/screen_square/screen_square.geom</file>
+    <file>shader/blur/blur.vert</file>
+    <file>shader/blur/blur.frag</file>
+    <file>shader/blur/blur.geom</file>
+
+    <file preprocess="xml-stripblanks">icons/scalable/action/closed-captioning-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/display-with-window-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/pause-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/pencil-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/play-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/test-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/blur-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/transparent-background-symbolic.svg</file>
+  </gresource>
+</gresources>
