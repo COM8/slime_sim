@@ -6,18 +6,32 @@
 #include <random>
 
 namespace ui::widgets::opengl {
-Slime::Slime(Rgba&& color, Vec4U&& randomState, Vec2&& pos, Vec2&& direction, uint32_t initialized) : color(color),
-                                                                                                      randomState(randomState),
-                                                                                                      pos(pos),
-                                                                                                      direction(direction),
-                                                                                                      initialized(initialized) {}
+Slime::Slime(Vec4U&& randState, Vec2&& pos, uint32_t speciesIndex, float angle) : randState(randState),
+                                                                                  pos(pos),
+                                                                                  speciesIndex(speciesIndex),
+                                                                                  angle(angle) {}
 
-int Slime::random_int() {
+float Slime::random_angle() {
     static std::random_device device;
     static std::mt19937 gen(device());
-    static std::uniform_int_distribution<int> distr(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
-    return distr(gen);
+    static std::uniform_real_distribution<float> distr(0, 1.0);
+
+    return static_cast<float>(distr(gen) * 2 * 3.1415);
 }
+
+Species::Species(Rgba&& color, float moveSpeed, float turnSpeed, float sensorAngleDegrees, float sensorOffsetDst, int sensorSize) : color(color),
+                                                                                                                                    moveSpeed(moveSpeed),
+                                                                                                                                    turnSpeed(turnSpeed),
+                                                                                                                                    sensorAngleDegrees(sensorAngleDegrees),
+                                                                                                                                    sensorOffsetDst(sensorOffsetDst),
+                                                                                                                                    sensorSize(sensorSize) {}
+
+// int Slime::random_int() {
+//     static std::random_device device;
+//     static std::mt19937 gen(device());
+//     static std::uniform_int_distribution<int> distr(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+//     return distr(gen);
+// }
 
 double Vec2::dist(const Vec2& other) const {
     return std::sqrt(std::pow(other.x - this->x, 2) + std::pow(other.y - this->y, 2));

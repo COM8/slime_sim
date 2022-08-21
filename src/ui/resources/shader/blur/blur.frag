@@ -17,6 +17,6 @@ void main()
         outColor += texture(inputTexture, pos);
     }
     outColor /= 9.0;
-    outColor *= vec4(1, 1, 1, 0.995);
+    outColor *= vec4(0.99);
     return;
 }

@@ -16,12 +16,14 @@ class SlimeGlObject : public AbstractGlObject {
 
     GLuint slimeTexture{0};
     GLuint slimeSSBO{0};
+    GLuint speciesSSBO{0};
     GLuint attribSSBO{0};
 
     std::shared_ptr<std::vector<opengl::Slime>> slimes{nullptr};
+    std::shared_ptr<std::vector<opengl::Species>> species{nullptr};
 
  public:
-    explicit SlimeGlObject(std::shared_ptr<std::vector<opengl::Slime>>& slimes, float width, float height);
+    explicit SlimeGlObject(std::shared_ptr<std::vector<opengl::Slime>>& slimes, std::shared_ptr<std::vector<opengl::Species>>& species, float width, float height);
     SlimeGlObject(SlimeGlObject& other) = delete;
     SlimeGlObject(SlimeGlObject&& old) = delete;
 

@@ -5,46 +5,32 @@ layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 layout(rgba32f, binding = 0) uniform image2D slimeImg;
 
 struct SlimeDescriptor {
+    uvec4 randState;
+    vec2 pos;
+    uint speciesIndex;
+    float angle;
+}; // Size will be rounded up to the next multiple of the largest member (vec4) -> 32 Bytes
+
+struct SpeciesDescriptor {
     vec4 color; // Offset: 0-15
-    uvec4 randState; // Offset 16-31
-    vec2 pos; // Offset: 32-39
-    vec2 padding; // Offset: 40-47
-    vec2 direction; // Offset: 48-55
-    uint initialized; // Offset: 56-59
-    uint padding1; // Offset: 60-63
+    float moveSpeed;
+    float turnSpeed;
+
+    float sensorAngleDegrees;
+	float sensorOffsetDst;
+    int sensorSize;
+
+    float padding0;
+    vec2 padding1;
+    vec4 padding2;
 }; // Size will be rounded up to the next multiple of the largest member (vec4) -> 64 Bytes
 
 layout(std430, binding = 1) buffer bufSlime { SlimeDescriptor slimes[]; };
-layout(std430, binding = 2) buffer bufAttr {
+layout(std430, binding = 2) buffer bufSpecies { SpeciesDescriptor species[]; };
+layout(std430, binding = 3) buffer bufAttr {
     int worldSizeX;
     int worldSizeY;
 };
-
-bool check_border_collision(uint index) {
-    bool collision = false;
-    if(slimes[index].pos.x > worldSizeX) {
-        slimes[index].pos.x = worldSizeX;
-        slimes[index].direction = reflect(slimes[index].direction, vec2(1, 0));
-        collision = true;
-    }
-    else if(slimes[index].pos.x < 0) {
-        slimes[index].pos.x = 0;
-        slimes[index].direction = reflect(slimes[index].direction, vec2(1, 0));
-        collision = true;
-    }
-
-    if(slimes[index].pos.y > worldSizeY) {
-        slimes[index].pos.y = worldSizeY;
-        slimes[index].direction = reflect(slimes[index].direction, vec2(0, 1));
-        collision = true;
-    }
-    else if(slimes[index].pos.y < 0) {
-        slimes[index].pos.y = 0;
-        slimes[index].direction = reflect(slimes[index].direction, vec2(0, 1));
-        collision = true;
-    }
-    return collision;
-}
 
 // ------------------------------------------------------------------------------------
 // 128 Bit XOR-Shift
@@ -91,48 +77,88 @@ float get_vec_dist_degree(vec2 v1, vec2 v2) {
     return angle * (180/NC_PI);
 }
 
+float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
+	float sensorAngle = slimes[index].angle + sensorAngleOffset;
+	vec2 sensorDir = vec2(cos(sensorAngle), sin(sensorAngle));
+
+	vec2 sensorPos = slimes[index].pos + sensorDir * species[speciesIndex].sensorOffsetDst;
+	int sensorCentreX = int(round(sensorPos.x));
+	int sensorCentreY = int(round(sensorPos.y));
+
+	float sum = 0;
+
+	// int4 senseWeight = slimes[index].speciesMask * 2 - 1;
+    ivec4 senseWeight = ivec4(1);
+
+    int sensorSize = species[speciesIndex].sensorSize;
+	for (int offsetX = -sensorSize; offsetX <= sensorSize; offsetX ++) {
+		for (int offsetY = -sensorSize; offsetY <= sensorSize; offsetY ++) {
+			int sampleX = min(worldSizeX - 1, max(0, sensorCentreX + offsetX));
+			int sampleY = min(worldSizeY - 1, max(0, sensorCentreY + offsetY));
+            ivec2 texelCoord = ivec2(sampleX, sampleY);
+            vec4 pixel = imageLoad(slimeImg, texelCoord);
+			sum += dot(senseWeight, pixel);
+		}
+	}
+
+	return sum;
+}
+
 void move(uint index) {
-    ivec2 bestGoal = ivec2(0);
-    vec4 bestPixel = vec4(0);
+	vec2 sPos = slimes[index].pos;
+    uint speciesIndex = slimes[index].speciesIndex;
 
-    for(float x = -1; x <= 1; x++) {
-        for(float y = -1; y <= 1; y++) {
-            if(!(x == 0 && y == 0)) {
-                ivec2 texelCoord = ivec2(round(slimes[index].pos.x + x), round(slimes[index].pos.y + y));
-                vec4 pixel = imageLoad(slimeImg, texelCoord);
-                if(pixel.w > bestPixel.w) {
-                    bestPixel = pixel;
-                    bestGoal = texelCoord;
-                }
-            }
-        }
-    }
+	// Steer based on sensory data
+	float sensorAngleRad = species[speciesIndex].sensorAngleDegrees * (3.1415 / 180);
+	float weightForward = sense(index, speciesIndex, 0);
+	float weightLeft = sense(index, speciesIndex, sensorAngleRad);
+	float weightRight = sense(index, speciesIndex, -sensorAngleRad);
 
-    if(bestPixel.w > 0) {
-        float angel = get_vec_dist_degree(slimes[index].direction, bestGoal) * 0.05;
-        slimes[index].direction = rotate(slimes[index].direction, angel);
-    }
-    slimes[index].pos += slimes[index].direction;
-    check_border_collision(index);
+	float randomSteerStrength = next_float(slimes[index].randState);
+	float turnSpeed = species[speciesIndex].turnSpeed * 2 * 3.1415;
+
+	// Continue in same direction
+	if (weightForward > weightLeft && weightForward > weightRight) {
+		slimes[index].angle += 0;
+	}
+	else if (weightForward < weightLeft && weightForward < weightRight) {
+		slimes[index].angle += (randomSteerStrength - 0.5) * 2 * turnSpeed;
+	}
+	// Turn right
+	else if (weightRight > weightLeft) {
+		slimes[index].angle -= randomSteerStrength * turnSpeed;
+	}
+	// Turn left
+	else if (weightLeft > weightRight) {
+		slimes[index].angle += randomSteerStrength * turnSpeed;
+	}
+
+
+	// Update position
+	vec2 direction = vec2(cos(slimes[index].angle), sin(slimes[index].angle));
+	vec2 newPos = sPos + direction * species[speciesIndex].moveSpeed;
+
+	
+	// Clamp position to map boundaries, and pick new random move dir if hit boundary
+	if (newPos.x < 0 || newPos.x >= worldSizeX || newPos.y < 0 || newPos.y >= worldSizeY) {
+		float randomAngle = next_float(slimes[index].randState) * 2 * 3.1415;
+
+		newPos.x = min(worldSizeX - 1 ,max(0, newPos.x));
+		newPos.y = min(worldSizeY - 1, max(0, newPos.y));
+		slimes[index].angle = randomAngle;
+	}
+	
+	slimes[index].pos = newPos;
 }
 
 void draw(uint index) {
+    uint speciesIndex = slimes[index].speciesIndex;
     ivec2 texelCoord = ivec2(round(slimes[index].pos.x), round(slimes[index].pos.y));
-    imageStore(slimeImg, texelCoord, slimes[index].color);
-}
-
-void init(uint index) {
-    slimes[index].direction = vec2(next_float(slimes[index].randState), next_float(slimes[index].randState));
+    imageStore(slimeImg, texelCoord, species[speciesIndex].color);
 }
 
 void main() {
     uint index = gl_GlobalInvocationID.x;
-
-    if(slimes[index].initialized == 0) {
-        init(index);
-        slimes[index].initialized = 1;
-        return;
-    }
 
     move(index);
     draw(index);

@@ -18,11 +18,12 @@ namespace ui::widgets {
 constexpr GLsizei RESOLUTION_X = 2560;
 constexpr GLsizei RESOLUTION_Y = 1440;
 
-constexpr GLsizei NUM_SLIMES = 8192;
+constexpr GLsizei NUM_SLIMES = 50000;
 
 class SimulationWidget : public Gtk::ScrolledWindow {
  private:
     std::shared_ptr<std::vector<opengl::Slime>> slimes{std::make_shared<std::vector<opengl::Slime>>()};
+    std::shared_ptr<std::vector<opengl::Species>> species{std::make_shared<std::vector<opengl::Species>>()};
 
     utils::TickDurationHistory fpsHistory{};
     utils::TickRate fps{};

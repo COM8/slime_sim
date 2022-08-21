@@ -30,17 +30,30 @@ struct Rgba {
 } __attribute__((aligned(16))) __attribute__((__packed__));
 
 struct Slime {
-    Rgba color{1.0, 0.0, 0.0, 1.0};
-    Vec4U randomState{};
+    Vec4U randState{};
     Vec2 pos{};
-    Vec2 direction{};
-    Vec2 padding0{};
-    uint32_t initialized{0};
-    uint32_t padding1{0};
+    uint32_t speciesIndex{0};
+    float angle{0};
 
  public:
-    Slime(Rgba&& color, Vec4U&& randomState, Vec2&& pos, Vec2&& direction, uint32_t initialized);
+    Slime(Vec4U&& randState, Vec2&& pos, uint32_t speciesIndex, float angle);
 
-    static int random_int();
+    static float random_angle();
+} __attribute__((aligned(32))) __attribute__((__packed__));
+
+struct Species {
+    Rgba color{1.0, 0.0, 0.0, 1.0};
+    float moveSpeed{0};
+    float turnSpeed{0};
+
+    float sensorAngleDegrees{0};
+    float sensorOffsetDst{0};
+    int sensorSize{0};
+
+    float padding0{0};
+    Vec2 padding1{};
+    Vec4U padding2{};
+
+    Species(Rgba&& color, float moveSpeed, float turnSpeed, float sensorAngleDegrees, float sensorOffsetDst, int sensorSize);
 } __attribute__((aligned(64))) __attribute__((__packed__));
 }  // namespace ui::widgets::opengl

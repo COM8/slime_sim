@@ -7,9 +7,10 @@
 #include <epoxy/gl_generated.h>
 
 namespace ui::widgets::opengl {
-SlimeGlObject::SlimeGlObject(std::shared_ptr<std::vector<opengl::Slime>>& slimes, float width, float height) : width(width),
-                                                                                                               height(height),
-                                                                                                               slimes(slimes) {}
+SlimeGlObject::SlimeGlObject(std::shared_ptr<std::vector<opengl::Slime>>& slimes, std::shared_ptr<std::vector<opengl::Species>>& species, float width, float height) : width(width),
+                                                                                                                                                                       height(height),
+                                                                                                                                                                       slimes(slimes),
+                                                                                                                                                                       species(species) {}
 
 void SlimeGlObject::set_slime_texture(GLuint slimeTexture) {
     this->slimeTexture = slimeTexture;
@@ -23,12 +24,18 @@ void SlimeGlObject::init_internal() {
     glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(opengl::Slime) * slimes->size()), static_cast<void*>(slimes->data()), GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, slimeSSBO);
 
+    assert(species);
+    glGenBuffers(1, &speciesSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, speciesSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(opengl::Species) * species->size()), static_cast<void*>(species->data()), GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, speciesSSBO);
+
     // Attributes:
     glGenBuffers(1, &attribSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, attribSSBO);
     std::vector<int32_t> attr{static_cast<int32_t>(width), static_cast<int32_t>(height)};
     glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(int32_t) * attr.size()), static_cast<void*>(attr.data()), GL_STATIC_READ);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, attribSSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, attribSSBO);
 
     // Compile shader:
     compShader = compile_shader("/ui/shader/slime/slime.comp", GL_COMPUTE_SHADER);

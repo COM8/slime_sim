@@ -19,7 +19,7 @@
 #include <gtkmm/gesturezoom.h>
 
 namespace ui::widgets {
-SimulationWidget::SimulationWidget() : slimeObj(slimes, RESOLUTION_X, RESOLUTION_Y),
+SimulationWidget::SimulationWidget() : slimeObj(slimes, species, RESOLUTION_X, RESOLUTION_Y),
                                        screenSquareObj(RESOLUTION_X, RESOLUTION_Y),
                                        slimeFrameBuffer(RESOLUTION_X, RESOLUTION_Y) {
     prep_widget();
@@ -52,13 +52,14 @@ void SimulationWidget::prep_widget() {
 }
 
 void SimulationWidget::init_slimes() {
+    species->emplace_back(opengl::Species(opengl::Rgba::random_color(), 1, 0.25, 30, 35, 1));
+
     for (size_t i = 0; i < NUM_SLIMES; i++) {
         slimes->emplace_back(opengl::Slime(
-            opengl::Rgba::random_color(),
             opengl::Vec4U::random_vec(),
             opengl::Vec2::random_vec(0, RESOLUTION_X, 0, RESOLUTION_Y),
-            opengl::Vec2::random_vec(0, RESOLUTION_X, 0, RESOLUTION_Y),
-            0));
+            0,
+            opengl::Slime::random_angle()));
     }
 }
 
