@@ -1,4 +1,5 @@
 #include "SimulationSettingsBarWidget.hpp"
+#include "sim/Types.hpp"
 #include "ui/widgets/SimulationWidget.hpp"
 #include <cassert>
 #include <gdkmm/display.h>
@@ -29,6 +30,10 @@ void SimulationSettingsBarWidget::prep_widget() {
     miscBox.add_css_class("linked");
     miscBox.set_margin_start(10);
     append(miscBox);
+
+    speciesBox.add_css_class("linked");
+    speciesBox.set_margin_start(10);
+    append(speciesBox);
 
     simulateTBtn.property_active().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_simulate_toggled));
     simulateTBtn.set_active(simulation->is_running());
@@ -82,6 +87,11 @@ void SimulationSettingsBarWidget::prep_widget() {
     blurTBtn.set_tooltip_text("Blur entities");
     blurTBtn.set_active(simulation->is_blur_enabled());
     miscBox.append(blurTBtn);
+
+    sim::Rgba color = (*simulation->get_species())[0].color;
+    speciesColorBtn.property_rgba().set_value(Gdk::RGBA(color.r, color.g, color.b, color.a));
+    speciesColorBtn.signal_color_set().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_color_set));
+    speciesBox.append(speciesColorBtn);
 }
 
 //-----------------------------Events:-----------------------------
@@ -143,5 +153,12 @@ void SimulationSettingsBarWidget::on_zoom_fit_clicked() {
 void SimulationSettingsBarWidget::on_blur_toggled() {
     assert(simulation);
     simulation->set_blur_enabled(blurTBtn.get_active());
+}
+
+void SimulationSettingsBarWidget::on_species_color_set() {
+    assert(simulation);
+    Gdk::RGBA color = speciesColorBtn.property_rgba();
+    (*simulation->get_species())[0].color = sim::Rgba{color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()};
+    simulation->set_species_need_sync(true);
 }
 }  // namespace ui::widgets

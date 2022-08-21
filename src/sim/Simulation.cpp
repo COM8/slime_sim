@@ -59,4 +59,20 @@ size_t Simulation::get_height() const {
     return height;
 }
 
+void Simulation::set_species_need_sync(bool speciesNeedSync) {
+    this->speciesNeedSync = speciesNeedSync;
+}
+
+void Simulation::set_slimes_need_sync(bool slimesNeedSync) {
+    this->slimesNeedSync = slimesNeedSync;
+}
+
+bool Simulation::do_species_need_sync() const {
+    return speciesNeedSync;
+}
+
+bool Simulation::do_slimes_need_sync() const {
+    return slimesNeedSync;
+}
+
 }  // namespace sim

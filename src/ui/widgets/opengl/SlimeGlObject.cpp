@@ -67,6 +67,18 @@ void SlimeGlObject::init_internal() {
 void SlimeGlObject::render_internal() {
     assert(simulation);
 
+    if (simulation->do_slimes_need_sync()) {
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, slimeSSBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(sim::Slime) * simulation->get_slimes()->size()), static_cast<void*>(simulation->get_slimes()->data()), GL_DYNAMIC_DRAW);
+        simulation->set_slimes_need_sync(false);
+    }
+
+    if (simulation->do_species_need_sync()) {
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, speciesSSBO);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, static_cast<GLsizeiptr>(sizeof(sim::Species) * simulation->get_species()->size()), static_cast<void*>(simulation->get_species()->data()), GL_DYNAMIC_DRAW);
+        simulation->set_species_need_sync(false);
+    }
+
     glBindImageTexture(0, slimeTexture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
     GLERR;
 

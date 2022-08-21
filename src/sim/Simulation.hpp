@@ -15,6 +15,9 @@ class Simulation {
     bool running{false};
     bool blurEnables{true};
 
+    bool slimesNeedSync{true};
+    bool speciesNeedSync{true};
+
     size_t width{2560};
     size_t height{1440};
     const size_t INITIAL_NUM_SLIMES{10000};
@@ -33,6 +36,12 @@ class Simulation {
 
     void set_running(bool running);
     void set_blur_enabled(bool blurEnables);
+
+    void set_species_need_sync(bool speciesNeedSync);
+    void set_slimes_need_sync(bool slimesNeedSync);
+
+    [[nodiscard]] bool do_species_need_sync() const;
+    [[nodiscard]] bool do_slimes_need_sync() const;
 
     static std::shared_ptr<Simulation>& get_instance();
 };

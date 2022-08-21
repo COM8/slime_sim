@@ -6,6 +6,7 @@
 #include "ui/widgets/SimulationOverlayWidget.hpp"
 #include <memory>
 #include <gtkmm/box.h>
+#include <gtkmm/colorbutton.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/togglebutton.h>
 
@@ -20,6 +21,7 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     Gtk::Box mainBox;
     Gtk::Box zoomBox;
     Gtk::Box miscBox;
+    Gtk::Box speciesBox;
 
     Gtk::ToggleButton simulateTBtn;
     Gtk::ToggleButton renderTBtn;
@@ -31,6 +33,8 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     Gtk::Button zoomFitBtn;
 
     Gtk::ToggleButton blurTBtn;
+
+    Gtk::ColorButton speciesColorBtn;
 
  public:
     SimulationSettingsBarWidget(SimulationWidget* simWidget, SimulationOverlayWidget* simOverlayWidget);
@@ -47,5 +51,6 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     void on_zoom_reset_clicked();
     void on_zoom_fit_clicked();
     void on_blur_toggled();
+    void on_species_color_set();
 };
 }  // namespace ui::widgets
