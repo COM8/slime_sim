@@ -12,7 +12,8 @@
 namespace ui::widgets {
 SimulationSettingsBarWidget::SimulationSettingsBarWidget(SimulationWidget* simWidget, SimulationOverlayWidget* simOverlayWidget) : Gtk::Box(Gtk::Orientation::HORIZONTAL),
                                                                                                                                    simWidget(simWidget),
-                                                                                                                                   simOverlayWidget(simOverlayWidget) {
+                                                                                                                                   simOverlayWidget(simOverlayWidget),
+                                                                                                                                   speciesTurnSpeedBtn(0, 0.5, 0.005) {
     prep_widget();
 }
 
@@ -91,7 +92,13 @@ void SimulationSettingsBarWidget::prep_widget() {
     sim::Rgba color = (*simulation->get_species())[0].color;
     speciesColorBtn.property_rgba().set_value(Gdk::RGBA(color.r, color.g, color.b, color.a));
     speciesColorBtn.signal_color_set().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_color_set));
+    speciesColorBtn.set_tooltip_text("Species color");
     speciesBox.append(speciesColorBtn);
+
+    speciesTurnSpeedBtn.set_value(static_cast<double>((*simulation->get_species())[0].turnSpeed));
+    speciesTurnSpeedBtn.set_tooltip_text("Species turning speed");
+    speciesTurnSpeedBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesBox.append(speciesTurnSpeedBtn);
 }
 
 //-----------------------------Events:-----------------------------
@@ -159,6 +166,12 @@ void SimulationSettingsBarWidget::on_species_color_set() {
     assert(simulation);
     Gdk::RGBA color = speciesColorBtn.property_rgba();
     (*simulation->get_species())[0].color = sim::Rgba{color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()};
+    simulation->set_species_need_sync(true);
+}
+
+void SimulationSettingsBarWidget::on_species_turn_speed_changed(double value) {
+    assert(simulation);
+    (*simulation->get_species())[0].turnSpeed = static_cast<float>(value);
     simulation->set_species_need_sync(true);
 }
 }  // namespace ui::widgets

@@ -7,6 +7,7 @@
 #include <memory>
 #include <gtkmm/box.h>
 #include <gtkmm/colorbutton.h>
+#include <gtkmm/scalebutton.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/togglebutton.h>
 
@@ -35,6 +36,10 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     Gtk::ToggleButton blurTBtn;
 
     Gtk::ColorButton speciesColorBtn;
+    Gtk::ScaleButton speciesTurnSpeedBtn;
+    // Gtk::ScaleButton speciesSensorAngleDegreesBtn;
+    // Gtk::ScaleButton speciesSensorSizeBtn;
+    // Gtk::ScaleButton speciesSensorOffsetBtn;
 
  public:
     SimulationSettingsBarWidget(SimulationWidget* simWidget, SimulationOverlayWidget* simOverlayWidget);
@@ -52,5 +57,6 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     void on_zoom_fit_clicked();
     void on_blur_toggled();
     void on_species_color_set();
+    void on_species_turn_speed_changed(double value);
 };
 }  // namespace ui::widgets
