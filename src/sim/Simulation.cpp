@@ -23,12 +23,20 @@ bool Simulation::is_initialized() const {
 
 void Simulation::init() {
     species->emplace_back(Species(Rgba::random_color(), 1, 0.25, 30, 35, 1));
-
-    for (size_t i = 0; i < INITIAL_NUM_SLIMES; i++) {
+    for (size_t i = 0; i < INITIAL_NUM_SLIMES / 2; i++) {
         slimes->emplace_back(Slime(
             Vec4U::random_vec(),
-            Vec2::random_vec(0, static_cast<float>(width), 0, static_cast<float>(height)),
+            Vec2::random_vec(static_cast<float>(width) / 2, static_cast<float>(width), 0, static_cast<float>(height)),
             0,
+            Slime::random_angle()));
+    }
+
+    species->emplace_back(Species(Rgba::random_color(), 1, 0.05, 20, 35, 1));
+    for (size_t i = 0; i < INITIAL_NUM_SLIMES / 2; i++) {
+        slimes->emplace_back(Slime(
+            Vec4U::random_vec(),
+            Vec2::random_vec(0, static_cast<float>(width) / 2, 0, static_cast<float>(height)),
+            1,
             Slime::random_angle()));
     }
 
