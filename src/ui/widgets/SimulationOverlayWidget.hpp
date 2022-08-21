@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SimulationWidget.hpp"
+#include "sim/Simulation.hpp"
 #include <memory>
 #include <gtkmm.h>
 
@@ -9,6 +10,8 @@ class SimulationOverlayWidget : public Gtk::DrawingArea {
  private:
     SimulationWidget* simWidget{nullptr};
     bool enableDebugOverlay{true};
+
+    std::shared_ptr<sim::Simulation> simulation{sim::Simulation::get_instance()};
 
  public:
     explicit SimulationOverlayWidget(SimulationWidget* simWidget);

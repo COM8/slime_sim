@@ -16,6 +16,8 @@ SimulationSettingsBarWidget::SimulationSettingsBarWidget(SimulationWidget* simWi
 }
 
 void SimulationSettingsBarWidget::prep_widget() {
+    assert(simulation);
+
     mainBox.add_css_class("linked");
     mainBox.set_margin_start(10);
     append(mainBox);
@@ -29,7 +31,8 @@ void SimulationSettingsBarWidget::prep_widget() {
     append(miscBox);
 
     simulateTBtn.property_active().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_simulate_toggled));
-    simulateTBtn.set_icon_name("play-large-symbolic");
+    simulateTBtn.set_active(simulation->is_running());
+    simulateTBtn.set_icon_name(simulation->is_running() ? "pause-large-symbolic" : "play-large-symbolic");
     simulateTBtn.set_tooltip_text("Enable simulation");
     simulateTBtn.add_css_class("suggested-action");
     mainBox.append(simulateTBtn);
@@ -77,11 +80,14 @@ void SimulationSettingsBarWidget::prep_widget() {
     blurTBtn.property_active().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_blur_toggled));
     blurTBtn.set_icon_name("blur-symbolic");
     blurTBtn.set_tooltip_text("Blur entities");
+    blurTBtn.set_active(simulation->is_blur_enabled());
     miscBox.append(blurTBtn);
 }
 
 //-----------------------------Events:-----------------------------
 void SimulationSettingsBarWidget::on_simulate_toggled() {
+    assert(simulation);
+    simulation->set_running(simulateTBtn.get_active());
     if (simulateTBtn.get_active()) {
         simulateTBtn.set_icon_name("pause-large-symbolic");
     } else {
@@ -126,15 +132,16 @@ void SimulationSettingsBarWidget::on_zoom_reset_clicked() {
 
 void SimulationSettingsBarWidget::on_zoom_fit_clicked() {
     assert(simWidget);
-    float zoomX = static_cast<float>(simWidget->get_width()) / RESOLUTION_X;
-    float zoomY = static_cast<float>(simWidget->get_height()) / RESOLUTION_Y;
+    assert(simulation);
+    float zoomX = static_cast<float>(simWidget->get_width()) / static_cast<float>(simulation->get_width());
+    float zoomY = static_cast<float>(simWidget->get_height()) / static_cast<float>(simulation->get_height());
     float zoomFactor = zoomX > zoomY ? zoomY : zoomX;
     simWidget->set_zoom_factor(zoomFactor);
     zoomInBtn.set_sensitive(true);
 }
 
 void SimulationSettingsBarWidget::on_blur_toggled() {
-    assert(simWidget);
-    simWidget->set_blur(blurTBtn.get_active());
+    assert(simulation);
+    simulation->set_blur_enabled(blurTBtn.get_active());
 }
 }  // namespace ui::widgets

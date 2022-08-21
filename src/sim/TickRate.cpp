@@ -1,6 +1,6 @@
 #include "TickRate.hpp"
 
-namespace utils {
+namespace sim {
 void TickRate::tick() {
     std::chrono::nanoseconds sinceLastTick = std::chrono::high_resolution_clock::now() - lastTick;
     lastTick = std::chrono::high_resolution_clock::now();
@@ -19,4 +19,4 @@ void TickRate::tick() {
 double TickRate::get_ticks() const {
     return ticks;
 }
-}  // namespace utils
+}  // namespace sim

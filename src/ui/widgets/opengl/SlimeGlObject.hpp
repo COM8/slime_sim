@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AbstractGlObject.hpp"
-#include "ui/widgets/opengl/Slime.hpp"
+#include "sim/Simulation.hpp"
 #include <memory>
 #include <vector>
 #include <epoxy/gl.h>
@@ -11,19 +11,15 @@ class SlimeGlObject : public AbstractGlObject {
  private:
     GLuint compShader{0};
 
-    const float width;
-    const float height;
-
     GLuint slimeTexture{0};
     GLuint slimeSSBO{0};
     GLuint speciesSSBO{0};
     GLuint attribSSBO{0};
 
-    std::shared_ptr<std::vector<opengl::Slime>> slimes{nullptr};
-    std::shared_ptr<std::vector<opengl::Species>> species{nullptr};
+    std::shared_ptr<sim::Simulation> simulation{sim::Simulation::get_instance()};
 
  public:
-    explicit SlimeGlObject(std::shared_ptr<std::vector<opengl::Slime>>& slimes, std::shared_ptr<std::vector<opengl::Species>>& species, float width, float height);
+    SlimeGlObject() = default;
     SlimeGlObject(SlimeGlObject& other) = delete;
     SlimeGlObject(SlimeGlObject&& old) = delete;
 

@@ -1,6 +1,6 @@
 
 #include "BlurGlObject.hpp"
-#include "ui/widgets/opengl/Slime.hpp"
+#include "sim/Types.hpp"
 #include <array>
 #include <cassert>
 #include <epoxy/gl_generated.h>
@@ -64,8 +64,8 @@ void BlurGlObject::init_internal() {
     assert(inputTextureSizeY > 0);
     float stepX = 1 / static_cast<float>(inputTextureSizeX);
     float stepY = 1 / static_cast<float>(inputTextureSizeY);
-    std::array<Vec2, 9> data{{{-stepX, -stepY}, {0, -stepY}, {stepX, -stepY}, {-stepX, 0}, {0, 0}, {stepX, 0}, {-stepX, stepY}, {0, stepY}, {stepX, stepY}}};
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(Vec2) * data.size(), data.data(), GL_STATIC_DRAW);
+    std::array<sim::Vec2, 9> data{{{-stepX, -stepY}, {0, -stepY}, {stepX, -stepY}, {-stepX, 0}, {0, 0}, {stepX, 0}, {-stepX, stepY}, {0, stepY}, {stepX, stepY}}};
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(sim::Vec2) * data.size(), data.data(), GL_STATIC_DRAW);
     GLERR;
     GLuint offsetsIndex = glGetUniformBlockIndex(shaderProg, "blurArrayBlock");
     GLERR;

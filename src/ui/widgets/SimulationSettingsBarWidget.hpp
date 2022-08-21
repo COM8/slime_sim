@@ -2,6 +2,7 @@
 
 #include "SimulationOverlayWidget.hpp"
 #include "SimulationWidget.hpp"
+#include "sim/Simulation.hpp"
 #include "ui/widgets/SimulationOverlayWidget.hpp"
 #include <memory>
 #include <gtkmm/box.h>
@@ -11,6 +12,8 @@
 namespace ui::widgets {
 class SimulationSettingsBarWidget : public Gtk::Box {
  private:
+    std::shared_ptr<sim::Simulation> simulation{sim::Simulation::get_instance()};
+
     SimulationWidget* simWidget{nullptr};
     SimulationOverlayWidget* simOverlayWidget{nullptr};
 

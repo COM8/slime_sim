@@ -2,11 +2,11 @@
 
 #include "opengl/BlurGlObject.hpp"
 #include "opengl/ScreenSquareGlObject.hpp"
-#include "opengl/Slime.hpp"
 #include "opengl/SlimeGlObject.hpp"
 #include "opengl/fb/SlimeFrameBuffer.hpp"
-#include "utils/TickDurationHistory.hpp"
-#include "utils/TickRate.hpp"
+#include "sim/Simulation.hpp"
+#include "sim/TickDurationHistory.hpp"
+#include "sim/TickRate.hpp"
 #include <array>
 #include <memory>
 #include <epoxy/gl.h>
@@ -15,28 +15,23 @@
 #include <gtkmm/scrolledwindow.h>
 
 namespace ui::widgets {
-constexpr GLsizei RESOLUTION_X = 2560;
-constexpr GLsizei RESOLUTION_Y = 1440;
-
 constexpr GLsizei NUM_SLIMES = 50000;
 
 class SimulationWidget : public Gtk::ScrolledWindow {
  private:
-    std::shared_ptr<std::vector<opengl::Slime>> slimes{std::make_shared<std::vector<opengl::Slime>>()};
-    std::shared_ptr<std::vector<opengl::Species>> species{std::make_shared<std::vector<opengl::Species>>()};
+    std::shared_ptr<sim::Simulation> simulation{sim::Simulation::get_instance()};
 
-    utils::TickDurationHistory fpsHistory{};
-    utils::TickRate fps{};
+    sim::TickDurationHistory fpsHistory{};
+    sim::TickRate fps{};
 
     // OpenGL:
     GLint defaultFb{0};
 
-    opengl::SlimeGlObject slimeObj;
+    opengl::SlimeGlObject slimeObj{};
     opengl::ScreenSquareGlObject screenSquareObj;
     opengl::BlurGlObject blurObject{};
 
     opengl::fb::SlimeFrameBuffer slimeFrameBuffer;
-    bool blur{false};
 
     Gtk::GLArea glArea;
     float zoomFactor{1};
@@ -46,17 +41,14 @@ class SimulationWidget : public Gtk::ScrolledWindow {
 
     SimulationWidget();
 
-    [[nodiscard]] const utils::TickRate& get_fps() const;
-    [[nodiscard]] const utils::TickDurationHistory& get_fps_history() const;
+    [[nodiscard]] const sim::TickRate& get_fps() const;
+    [[nodiscard]] const sim::TickDurationHistory& get_fps_history() const;
 
     void set_zoom_factor(float zoomFactor);
     [[nodiscard]] float get_zoom_factor() const;
 
-    void set_blur(bool blur);
-
  private:
     void prep_widget();
-    void init_slimes();
 
     //-----------------------------Events:-----------------------------
     bool on_render_handler(const Glib::RefPtr<Gdk::GLContext>& ctx);

@@ -3,7 +3,7 @@
 #include <chrono>
 #include <vector>
 
-namespace utils {
+namespace sim {
 class TickRate {
  private:
     std::chrono::high_resolution_clock::time_point lastTick = std::chrono::high_resolution_clock::now();
@@ -17,4 +17,4 @@ class TickRate {
     void tick();
     [[nodiscard]] double get_ticks() const;
 };
-}  // namespace utils
+}  // namespace sim

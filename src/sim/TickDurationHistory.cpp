@@ -1,7 +1,7 @@
 #include "TickDurationHistory.hpp"
 #include <fmt/core.h>
 
-namespace utils {
+namespace sim {
 TickDurationHistory::TickDurationHistory() {
     times.reserve(MAX_TIMES);
 }
@@ -50,4 +50,4 @@ std::string TickDurationHistory::get_avg_time_str() const {
     }
     return fmt::format("{:.2f}{}", ticktime, unit);
 }
-}  // namespace utils
+}  // namespace sim

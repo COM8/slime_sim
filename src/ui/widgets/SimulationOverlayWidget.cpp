@@ -47,6 +47,7 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
         return;
     }
     assert(simWidget);
+    assert(simulation);
 
     // double tps = simulator->get_tps().get_ticks();
     // std::string tpsTime = simulator->get_tps_history().get_avg_time_str();
@@ -60,9 +61,9 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
     // std::string stats = fmt::format("TPS: {:.2f}\nTick Time: {} (Update: {}, Collision: {})\n", tps, tpsTime, updateTickTime, collisionDetectionTickTime);
     std::string stats;
     stats += fmt::format("FPS: {:.2f}\nFrame Time: {}\n", fps, fpsTime);
-    // stats += fmt::format(local, "Entities: {:L}\n", sim::MAX_ENTITIES);
+    stats += fmt::format(local, "Slimes: {:L}, Species: {:L}\n", simulation->get_slimes()->size(), simulation->get_species()->size());
     stats += fmt::format("Zoom: {}\n", simWidget->get_zoom_factor());
-    stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n", RESOLUTION_X, RESOLUTION_Y);
+    stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n", simulation->get_width(), simulation->get_height());
     draw_text(stats, ctx, 5, 5);
 }
 
