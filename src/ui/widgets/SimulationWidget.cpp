@@ -18,7 +18,7 @@
 
 namespace ui::widgets {
 SimulationWidget::SimulationWidget() : screenSquareObj(static_cast<float>(simulation->get_width()), static_cast<float>(simulation->get_height())),
-                                       slimeFrameBuffer(static_cast<GLsizei>(simulation->get_height()), static_cast<GLsizei>(simulation->get_height())) {
+                                       slimeFrameBuffer(static_cast<GLsizei>(simulation->get_width()), static_cast<GLsizei>(simulation->get_height())) {
     prep_widget();
 }
 
