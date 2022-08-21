@@ -1,5 +1,5 @@
-# Movement Simulator
-GPU accelerated human movement simulator.
+# Slime Simulator
+GPU accelerated human slime simulator.
 
 ## Disable GPU Hangcheck
 
@@ -28,8 +28,8 @@ sudo dnf install renderdoc-devel
 
 ### Compiling
 ```
-git clone https://github.com/COM8/movement-sim.git
-cd movement-sim
+git clone https://github.com/COM8/slime-sim.git
+cd slime-sim
 mkdir build
 cd build
 cmake ..
