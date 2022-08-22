@@ -46,6 +46,11 @@ void SimulationWidget::prep_widget() {
     glArea.set_size_request(static_cast<int>(simulation->get_width()), static_cast<int>(simulation->get_height()));
     set_child(glArea);
     screenSquareObj.set_glArea(&glArea);
+
+    Glib::RefPtr<Gtk::GestureClick> clickGesture = Gtk::GestureClick::create();
+    clickGesture->set_button(GDK_BUTTON_PRIMARY);
+    clickGesture->signal_pressed().connect(sigc::mem_fun(*this, &SimulationWidget::on_glArea_clicked));
+    glArea.add_controller(clickGesture);
 }
 
 const sim::TickRate& SimulationWidget::get_fps() const {
@@ -58,6 +63,14 @@ const sim::TickDurationHistory& SimulationWidget::get_fps_history() const {
 
 float SimulationWidget::get_zoom_factor() const {
     return zoomFactor;
+}
+
+void SimulationWidget::set_species_index(uint32_t speciesIndex) {
+    this->speciesIndex = speciesIndex;
+}
+
+void SimulationWidget::set_species_add_enabled(bool speciedAddEnabled) {
+    this->speciedAddEnabled = speciedAddEnabled;
 }
 
 //-----------------------------Events:-----------------------------
@@ -162,5 +175,19 @@ void SimulationWidget::on_unrealized() {
     } catch (const Gdk::GLError& gle) {
         SPDLOG_ERROR("An error occurred deleting the context current during unrealize: {} - {} - {}", gle.domain(), gle.code(), gle.what());
     }
+}
+
+void SimulationWidget::on_glArea_clicked(int /*nPress*/, double x, double y) {
+    if (!speciedAddEnabled) {
+        return;
+    }
+
+    // Invert since coordinates are inverted on the map:
+    y = glArea.get_height() - y;
+
+    assert(simulation);
+    x *= static_cast<double>(simulation->get_width()) / glArea.get_width();
+    y *= static_cast<double>(simulation->get_height()) / glArea.get_height();
+    simulation->add_slimes(static_cast<float>(x), static_cast<float>(y), 10, speciesIndex);
 }
 }  // namespace ui::widgets

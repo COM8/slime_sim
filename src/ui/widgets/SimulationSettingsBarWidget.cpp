@@ -2,6 +2,7 @@
 #include "sim/Types.hpp"
 #include "ui/widgets/SimulationWidget.hpp"
 #include <cassert>
+#include <cstdint>
 #include <gdkmm/display.h>
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/box.h>
@@ -113,18 +114,27 @@ void SimulationSettingsBarWidget::prep_widget() {
 
     speciesSensorAngleDegreesBtn.set_tooltip_text("Species sensor angle");
     speciesSensorAngleDegreesBtn.set_icons({"object-straighten-symbolic"});
-    speciesSensorAngleDegreesBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesSensorAngleDegreesBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_sensor_angle_changed));
     speciesBox.append(speciesSensorAngleDegreesBtn);
 
     speciesSensorSizeBtn.set_tooltip_text("Species sensor size");
     speciesSensorSizeBtn.set_icons({"image-resize-symbolic"});
-    speciesSensorSizeBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesSensorSizeBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_sensor_size_changed));
     speciesBox.append(speciesSensorSizeBtn);
 
     speciesSensorOffsetBtn.set_tooltip_text("Species sensor offset");
     speciesSensorOffsetBtn.set_icons({"hig-symbolic"});
-    speciesSensorOffsetBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesSensorOffsetBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_sensor_offset_changed));
     speciesBox.append(speciesSensorOffsetBtn);
+
+    speciesAddSlimesTBtn.property_active().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_add_slimes_toggled));
+    speciesAddSlimesTBtn.set_icon_name("add-symbolic");
+    speciesAddSlimesTBtn.set_tooltip_text("Add slimes to species");
+    speciesAddSlimesTBtn.set_active(false);
+    speciesBox.append(speciesAddSlimesTBtn);
+
+    // Trigger species selection update:
+    on_species_selection_changed();
 }
 
 //-----------------------------Events:-----------------------------
@@ -195,6 +205,15 @@ void SimulationSettingsBarWidget::on_species_selection_changed() {
     speciesColorBtn.property_rgba().set_value(Gdk::RGBA(color.r, color.g, color.b, color.a));
 
     speciesTurnSpeedBtn.set_value(static_cast<double>((*simulation->get_species())[index].turnSpeed));
+
+    speciesSensorAngleDegreesBtn.set_value(static_cast<double>((*simulation->get_species())[index].sensorAngleDegrees));
+
+    speciesSensorSizeBtn.set_value(static_cast<double>((*simulation->get_species())[index].sensorSize));
+
+    speciesSensorOffsetBtn.set_value(static_cast<double>((*simulation->get_species())[index].sensorOffsetDst));
+
+    assert(simWidget);
+    simWidget->set_species_index(static_cast<uint32_t>(index));
 }
 
 void SimulationSettingsBarWidget::on_species_color_set() {
@@ -231,6 +250,11 @@ void SimulationSettingsBarWidget::on_species_sensor_offset_changed(double value)
     guint index = speciesDropDown.get_selected();
     (*simulation->get_species())[index].sensorOffsetDst = static_cast<float>(value);
     simulation->set_species_need_sync(true);
+}
+
+void SimulationSettingsBarWidget::on_species_add_slimes_toggled() {
+    assert(simWidget);
+    simWidget->set_species_add_enabled(speciesAddSlimesTBtn.get_active());
 }
 
 }  // namespace ui::widgets

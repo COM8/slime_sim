@@ -41,6 +41,7 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     Gtk::ScaleButton speciesSensorAngleDegreesBtn;
     Gtk::ScaleButton speciesSensorSizeBtn;
     Gtk::ScaleButton speciesSensorOffsetBtn;
+    Gtk::ToggleButton speciesAddSlimesTBtn;
 
  public:
     SimulationSettingsBarWidget(SimulationWidget* simWidget, SimulationOverlayWidget* simOverlayWidget);
@@ -63,5 +64,6 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     void on_species_sensor_size_changed(double value);
     void on_species_sensor_offset_changed(double value);
     void on_species_selection_changed();
+    void on_species_add_slimes_toggled();
 };
 }  // namespace ui::widgets

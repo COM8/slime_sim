@@ -2,6 +2,7 @@
 
 #include "Slime.hpp"
 #include "Species.hpp"
+#include <cstddef>
 #include <memory>
 #include <vector>
 
@@ -44,5 +45,7 @@ class Simulation {
     [[nodiscard]] bool do_slimes_need_sync() const;
 
     static std::shared_ptr<Simulation>& get_instance();
+
+    void add_slimes(float x, float y, size_t count, uint32_t speciesIndex);
 };
 }  // namespace sim

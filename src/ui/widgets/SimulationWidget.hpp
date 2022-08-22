@@ -35,6 +35,8 @@ class SimulationWidget : public Gtk::ScrolledWindow {
 
     Gtk::GLArea glArea;
     float zoomFactor{1};
+    uint32_t speciesIndex{0};
+    uint32_t speciedAddEnabled{false};
 
  public:
     bool enableUiUpdates{true};
@@ -46,6 +48,8 @@ class SimulationWidget : public Gtk::ScrolledWindow {
 
     void set_zoom_factor(float zoomFactor);
     [[nodiscard]] float get_zoom_factor() const;
+    void set_species_index(uint32_t speciesIndex);
+    void set_species_add_enabled(bool speciedAddEnabled);
 
  private:
     void prep_widget();
@@ -55,5 +59,6 @@ class SimulationWidget : public Gtk::ScrolledWindow {
     bool on_tick(const Glib::RefPtr<Gdk::FrameClock>& frameClock);
     void on_realized();
     void on_unrealized();
+    void on_glArea_clicked(int nPress, double x, double y);
 };
 }  // namespace ui::widgets

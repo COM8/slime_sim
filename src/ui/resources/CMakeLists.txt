@@ -23,4 +23,5 @@ set(RESOURCE_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/theme.css
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/image-resize-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/object-straighten-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/rotation-allowed-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/plus-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/transparent-background-symbolic.svg PARENT_SCOPE)

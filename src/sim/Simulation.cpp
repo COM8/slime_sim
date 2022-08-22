@@ -1,4 +1,6 @@
 #include "Simulation.hpp"
+#include <cmath>
+#include <random>
 
 namespace sim {
 const std::shared_ptr<std::vector<Slime>>& Simulation::get_slimes() const {
@@ -81,6 +83,28 @@ bool Simulation::do_species_need_sync() const {
 
 bool Simulation::do_slimes_need_sync() const {
     return slimesNeedSync;
+}
+
+void Simulation::add_slimes(float x, float y, size_t count, uint32_t speciesIndex) {
+    static std::random_device device;
+    static std::mt19937 gen(device());
+    static std::uniform_real_distribution<float> distr(0, 1.0);
+    for (size_t i = 0; i < count; i++) {
+        x += (distr(gen) * 50) - 25;
+        x = std::min(x, static_cast<float>(width));
+        x = std::max(x, static_cast<float>(0));
+
+        y += (distr(gen) * 50) - 25;
+        y = std::min(y, static_cast<float>(height));
+        y = std::max(y, static_cast<float>(0));
+
+        slimes->emplace_back(Slime(
+            Vec4U::random_vec(),
+            Vec2{x, y},
+            speciesIndex,
+            Slime::random_angle()));
+    }
+    slimesNeedSync = true;
 }
 
 }  // namespace sim

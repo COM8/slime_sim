@@ -22,6 +22,7 @@
     <file preprocess="xml-stripblanks">icons/scalable/action/image-resize-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/object-straighten-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/rotation-allowed-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/plus-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/transparent-background-symbolic.svg</file>
   </gresource>
 </gresources>
