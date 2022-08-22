@@ -19,4 +19,8 @@ set(RESOURCE_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/theme.css
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/play-large-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/test-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/blur-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/hig-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/image-resize-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/object-straighten-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/rotation-allowed-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/transparent-background-symbolic.svg PARENT_SCOPE)

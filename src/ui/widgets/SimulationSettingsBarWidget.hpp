@@ -35,11 +35,12 @@ class SimulationSettingsBarWidget : public Gtk::Box {
 
     Gtk::ToggleButton blurTBtn;
 
+    Gtk::DropDown speciesDropDown;
     Gtk::ColorButton speciesColorBtn;
     Gtk::ScaleButton speciesTurnSpeedBtn;
-    // Gtk::ScaleButton speciesSensorAngleDegreesBtn;
-    // Gtk::ScaleButton speciesSensorSizeBtn;
-    // Gtk::ScaleButton speciesSensorOffsetBtn;
+    Gtk::ScaleButton speciesSensorAngleDegreesBtn;
+    Gtk::ScaleButton speciesSensorSizeBtn;
+    Gtk::ScaleButton speciesSensorOffsetBtn;
 
  public:
     SimulationSettingsBarWidget(SimulationWidget* simWidget, SimulationOverlayWidget* simOverlayWidget);
@@ -58,5 +59,9 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     void on_blur_toggled();
     void on_species_color_set();
     void on_species_turn_speed_changed(double value);
+    void on_species_sensor_angle_changed(double value);
+    void on_species_sensor_size_changed(double value);
+    void on_species_sensor_offset_changed(double value);
+    void on_species_selection_changed();
 };
 }  // namespace ui::widgets

@@ -13,7 +13,10 @@ namespace ui::widgets {
 SimulationSettingsBarWidget::SimulationSettingsBarWidget(SimulationWidget* simWidget, SimulationOverlayWidget* simOverlayWidget) : Gtk::Box(Gtk::Orientation::HORIZONTAL),
                                                                                                                                    simWidget(simWidget),
                                                                                                                                    simOverlayWidget(simOverlayWidget),
-                                                                                                                                   speciesTurnSpeedBtn(0, 0.5, 0.005) {
+                                                                                                                                   speciesTurnSpeedBtn(0, 0.5, 0.005),
+                                                                                                                                   speciesSensorAngleDegreesBtn(0, 90, 1),
+                                                                                                                                   speciesSensorSizeBtn(0, 10, 1),
+                                                                                                                                   speciesSensorOffsetBtn(0, 100, 1) {
     prep_widget();
 }
 
@@ -89,16 +92,39 @@ void SimulationSettingsBarWidget::prep_widget() {
     blurTBtn.set_active(simulation->is_blur_enabled());
     miscBox.append(blurTBtn);
 
-    sim::Rgba color = (*simulation->get_species())[0].color;
-    speciesColorBtn.property_rgba().set_value(Gdk::RGBA(color.r, color.g, color.b, color.a));
+    std::vector<Glib::ustring> speciesNames;
+    for (size_t i = 0; i < simulation->get_species()->size(); i++) {
+        speciesNames.emplace_back(std::to_string(i));
+    }
+    speciesDropDown.set_model(Gtk::StringList::create(speciesNames));
+    speciesDropDown.set_selected(0);
+    speciesDropDown.set_tooltip_text("Change the selected species");
+    speciesDropDown.property_selected().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_selection_changed));
+    speciesBox.append(speciesDropDown);
+
     speciesColorBtn.signal_color_set().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_color_set));
     speciesColorBtn.set_tooltip_text("Species color");
     speciesBox.append(speciesColorBtn);
 
-    speciesTurnSpeedBtn.set_value(static_cast<double>((*simulation->get_species())[0].turnSpeed));
     speciesTurnSpeedBtn.set_tooltip_text("Species turning speed");
+    speciesTurnSpeedBtn.set_icons({"rotation-allowed-symbolic"});
     speciesTurnSpeedBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
     speciesBox.append(speciesTurnSpeedBtn);
+
+    speciesSensorAngleDegreesBtn.set_tooltip_text("Species sensor angle");
+    speciesSensorAngleDegreesBtn.set_icons({"object-straighten-symbolic"});
+    speciesSensorAngleDegreesBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesBox.append(speciesSensorAngleDegreesBtn);
+
+    speciesSensorSizeBtn.set_tooltip_text("Species sensor size");
+    speciesSensorSizeBtn.set_icons({"image-resize-symbolic"});
+    speciesSensorSizeBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesBox.append(speciesSensorSizeBtn);
+
+    speciesSensorOffsetBtn.set_tooltip_text("Species sensor offset");
+    speciesSensorOffsetBtn.set_icons({"hig-symbolic"});
+    speciesSensorOffsetBtn.signal_value_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_turn_speed_changed));
+    speciesBox.append(speciesSensorOffsetBtn);
 }
 
 //-----------------------------Events:-----------------------------
@@ -162,16 +188,49 @@ void SimulationSettingsBarWidget::on_blur_toggled() {
     simulation->set_blur_enabled(blurTBtn.get_active());
 }
 
+void SimulationSettingsBarWidget::on_species_selection_changed() {
+    guint index = speciesDropDown.get_selected();
+
+    sim::Rgba color = (*simulation->get_species())[index].color;
+    speciesColorBtn.property_rgba().set_value(Gdk::RGBA(color.r, color.g, color.b, color.a));
+
+    speciesTurnSpeedBtn.set_value(static_cast<double>((*simulation->get_species())[index].turnSpeed));
+}
+
 void SimulationSettingsBarWidget::on_species_color_set() {
     assert(simulation);
+    guint index = speciesDropDown.get_selected();
     Gdk::RGBA color = speciesColorBtn.property_rgba();
-    (*simulation->get_species())[0].color = sim::Rgba{color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()};
+    (*simulation->get_species())[index].color = sim::Rgba{color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()};
     simulation->set_species_need_sync(true);
 }
 
 void SimulationSettingsBarWidget::on_species_turn_speed_changed(double value) {
     assert(simulation);
-    (*simulation->get_species())[0].turnSpeed = static_cast<float>(value);
+    guint index = speciesDropDown.get_selected();
+    (*simulation->get_species())[index].turnSpeed = static_cast<float>(value);
     simulation->set_species_need_sync(true);
 }
+
+void SimulationSettingsBarWidget::on_species_sensor_angle_changed(double value) {
+    assert(simulation);
+    guint index = speciesDropDown.get_selected();
+    (*simulation->get_species())[index].sensorAngleDegrees = static_cast<float>(value);
+    simulation->set_species_need_sync(true);
+}
+
+void SimulationSettingsBarWidget::on_species_sensor_size_changed(double value) {
+    assert(simulation);
+    guint index = speciesDropDown.get_selected();
+    (*simulation->get_species())[index].sensorSize = static_cast<int>(value);
+    simulation->set_species_need_sync(true);
+}
+
+void SimulationSettingsBarWidget::on_species_sensor_offset_changed(double value) {
+    assert(simulation);
+    guint index = speciesDropDown.get_selected();
+    (*simulation->get_species())[index].sensorOffsetDst = static_cast<float>(value);
+    simulation->set_species_need_sync(true);
+}
+
 }  // namespace ui::widgets
