@@ -10,11 +10,14 @@
 namespace ui::widgets {
 SimulationOverlayWidget::SimulationOverlayWidget(SimulationWidget* simWidget) : simWidget(simWidget) {
     prep_widget();
-    set_draw_func(sigc::mem_fun(*this, &SimulationOverlayWidget::on_draw_handler));
-    add_tick_callback(sigc::mem_fun(*this, &SimulationOverlayWidget::on_tick));
 }
 
 void SimulationOverlayWidget::prep_widget() {
+    drawingArea.set_draw_func(sigc::mem_fun(*this, &SimulationOverlayWidget::on_draw_handler));
+    drawingArea.add_tick_callback(sigc::mem_fun(*this, &SimulationOverlayWidget::on_tick));
+    add_overlay(drawingArea);
+    set_child(speciesPreviewWidget);
+
     // Disable focus since this widget is just a overlay for the actual simulation:
     set_can_target(false);
     set_can_focus(false);
@@ -39,6 +42,10 @@ void SimulationOverlayWidget::draw_text(const std::string& text, const Cairo::Re
 
 void SimulationOverlayWidget::set_debug_overlay_enabled(bool enableDebugOverlay) {
     this->enableDebugOverlay = enableDebugOverlay;
+}
+
+void SimulationOverlayWidget::set_species_index(size_t speciesIndex) {
+    speciesPreviewWidget.set_species_index(speciesIndex);
 }
 
 //-----------------------------Events:-----------------------------

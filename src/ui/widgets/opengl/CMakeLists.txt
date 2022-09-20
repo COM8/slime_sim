@@ -7,7 +7,9 @@ add_library(ui_widgets_opengl AbstractGlObject.hpp
                               BlurGlObject.hpp
                               BlurGlObject.cpp
                               ScreenSquareGlObject.cpp
-                              ScreenSquareGlObject.hpp)
+                              ScreenSquareGlObject.hpp
+                              SpeciesPreviewGlObject.cpp
+                              SpeciesPreviewGlObject.hpp)
 
 target_link_libraries(ui_widgets_opengl PRIVATE logger PkgConfig::EPOXY PkgConfig::GTKMM ui_widgets_opengl_utils sim)
 

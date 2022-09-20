@@ -214,6 +214,7 @@ void SimulationSettingsBarWidget::on_species_selection_changed() {
 
     assert(simWidget);
     simWidget->set_species_index(static_cast<uint32_t>(index));
+    simOverlayWidget->set_species_index(static_cast<uint32_t>(index));
 }
 
 void SimulationSettingsBarWidget::on_species_color_set() {

@@ -10,6 +10,9 @@
     <file>shader/blur/blur.vert</file>
     <file>shader/blur/blur.frag</file>
     <file>shader/blur/blur.geom</file>
+    <file>shader/species_preview/species_preview.vert</file>
+    <file>shader/species_preview/species_preview.frag</file>
+    <file>shader/species_preview/species_preview.geom</file>
 
     <file preprocess="xml-stripblanks">icons/scalable/action/closed-captioning-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/display-with-window-symbolic.svg</file>

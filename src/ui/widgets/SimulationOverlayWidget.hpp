@@ -1,15 +1,19 @@
 #pragma once
 
 #include "SimulationWidget.hpp"
+#include "SpeciesPreviewWidget.hpp"
 #include "sim/Simulation.hpp"
 #include <memory>
 #include <gtkmm.h>
 
 namespace ui::widgets {
-class SimulationOverlayWidget : public Gtk::DrawingArea {
+class SimulationOverlayWidget : public Gtk::Overlay {
  private:
     SimulationWidget* simWidget{nullptr};
+    SpeciesPreviewWidget speciesPreviewWidget{};
     bool enableDebugOverlay{true};
+
+    Gtk::DrawingArea drawingArea{};
 
     std::shared_ptr<sim::Simulation> simulation{sim::Simulation::get_instance()};
 
@@ -17,6 +21,7 @@ class SimulationOverlayWidget : public Gtk::DrawingArea {
     explicit SimulationOverlayWidget(SimulationWidget* simWidget);
 
     void set_debug_overlay_enabled(bool enableDebugOverlay);
+    void set_species_index(size_t speciesIndex);
 
  private:
     void prep_widget();
