@@ -77,6 +77,14 @@ float get_vec_dist_degree(vec2 v1, vec2 v2) {
     return angle * (180/NC_PI);
 }
 
+float color_dist(vec4 colorSpecies, vec4 colorPixel) {
+	colorSpecies *= colorPixel.w;
+	return -(abs(colorSpecies.x - colorPixel.x) + abs(colorSpecies.y - colorPixel.y) + abs(colorSpecies.z - colorPixel.z));
+}
+
+/**
+ * Higher values returd get preffered more.
+ **/
 float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
 	float sensorAngle = slimes[index].angle + sensorAngleOffset;
 	vec2 sensorDir = vec2(cos(sensorAngle), sin(sensorAngle));
@@ -87,8 +95,7 @@ float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
 
 	float sum = 0;
 
-	// int4 senseWeight = slimes[index].speciesMask * 2 - 1;
-    ivec4 senseWeight = ivec4(1);
+    // ivec4 senseWeight = ivec4(1);
 
     int sensorSize = species[speciesIndex].sensorSize;
 	for (int offsetX = -sensorSize; offsetX <= sensorSize; offsetX ++) {
@@ -97,7 +104,9 @@ float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
 			int sampleY = min(worldSizeY - 1, max(0, sensorCentreY + offsetY));
             ivec2 texelCoord = ivec2(sampleX, sampleY);
             vec4 pixel = imageLoad(slimeImg, texelCoord);
-			sum += dot(senseWeight, pixel);
+
+			// sum += dot(senseWeight, pixel);
+			sum += color_dist(species[speciesIndex].color, pixel);
 		}
 	}
 

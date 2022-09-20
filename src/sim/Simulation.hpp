@@ -21,7 +21,7 @@ class Simulation {
 
     size_t width{2560};
     size_t height{1440};
-    const size_t INITIAL_NUM_SLIMES{100000};
+    const size_t INITIAL_NUM_SLIMES{10000};
 
     void init();
     [[nodiscard]] bool is_initialized() const;
