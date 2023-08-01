@@ -138,7 +138,7 @@ void SimulationSettingsBarWidget::prep_widget() {
     speciesAddSlimesTBtn.set_icon_name("add-symbolic");
     speciesAddSlimesTBtn.set_tooltip_text("Add slimes to species");
     speciesAddSlimesTBtn.set_active(false);
-    speciesBox.append(speciesAddSlimesTBtn);
+    // speciesBox.append(speciesAddSlimesTBtn);
 
     // Trigger species selection update:
     on_species_selection_changed();
