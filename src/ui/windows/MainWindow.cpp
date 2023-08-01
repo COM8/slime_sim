@@ -1,4 +1,5 @@
 #include "MainWindow.hpp"
+#include "sim/Simulation.hpp"
 #include <cassert>
 #include <gtkmm/window.h>
 
@@ -57,6 +58,16 @@ bool MainWindow::on_key_pressed(guint keyVal, guint /*keyCode*/, Gdk::ModifierTy
     if (keyVal == GDK_KEY_Escape && is_fullscreen()) {
         unfullscreen();
         return true;
+    }
+
+    // Toggle menu bar
+    if ((keyVal == GDK_KEY_M) || (keyVal == GDK_KEY_m)) {
+        simulationSettingsBarWidget.set_visible(!simulationSettingsBarWidget.get_visible());
+    }
+
+    // Toggle simulation
+    if ((keyVal == GDK_KEY_P) || (keyVal == GDK_KEY_p)) {
+        sim::Simulation::get_instance()->set_running(!sim::Simulation::get_instance()->is_running());
     }
     return false;
 }

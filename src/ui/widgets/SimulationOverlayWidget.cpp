@@ -89,7 +89,9 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
     stats += fmt::format("FPS: {:.2f}\nFrame Time: {}\n", fps, fpsTime);
     stats += fmt::format(local, "Slimes: {:L}, Species: {:L}\n", simulation->get_slimes()->size(), simulation->get_species()->size());
     stats += fmt::format("Zoom: {}\n", simWidget->get_zoom_factor());
-    stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n", simulation->get_width(), simulation->get_height());
+    stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n\n", simulation->get_width(), simulation->get_height());
+    stats += "F - Toggle full screen\n";
+    stats += "P - Toggle simulation running\n";
     draw_text(stats, ctx, 5, 5);
 }
 
