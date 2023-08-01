@@ -30,7 +30,7 @@ void SpeciesPreviewCairoWidget::set_species_index(size_t speciesIndex) {
     queue_draw();
 }
 
-sim::Vec2 SpeciesPreviewCairoWidget::calc_sensor_offset_center(sim::Species& species, float angel) {
+sim::Vec2 SpeciesPreviewCairoWidget::calc_sensor_pos(sim::Species& species, float angel) {
     const double rad = static_cast<float>(angel * (std::numbers::pi / 180.0));
     const double sizeCorrection = ((species.sensorOffsetDst) + static_cast<float>(species.sensorSize));
 
@@ -70,29 +70,29 @@ void SpeciesPreviewCairoWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Conte
     const float actSensorSizeHalf = (actSensorSize / 2);
 
     // Top:
-    sim::Vec2 top = calc_sensor_offset_center(species, 180);
+    sim::Vec2 top = calc_sensor_pos(species, 180);
     top.x *= totalWidthFactor;
     top.y *= totalWidthFactor;
 
-    ctx->rectangle(padding + top.x - actSensorSizeHalf, top.y + padding - actSensorSizeHalf, actSensorSize, actSensorSize);
+    ctx->rectangle(padding + top.x - actSensorSizeHalf, padding + top.y, actSensorSize, actSensorSize);
     ctx->set_source_rgba(1 - species.color.r, 1 - species.color.g, 1 - species.color.b, species.color.a);
     ctx->fill();
 
     // Left:
-    sim::Vec2 left = calc_sensor_offset_center(species, 270 + species.sensorAngleDegrees);
+    sim::Vec2 left = calc_sensor_pos(species, 270 - species.sensorAngleDegrees);
     left.x *= totalWidthFactor;
     left.y *= totalWidthFactor;
 
-    ctx->rectangle(padding + left.x - actSensorSizeHalf, left.y + padding - actSensorSizeHalf, actSensorSize, actSensorSize);
+    ctx->rectangle(padding + left.x - actSensorSizeHalf, padding + left.y - actSensorSizeHalf, actSensorSize, actSensorSize);
     ctx->set_source_rgba(1 - species.color.r, 1 - species.color.g, 1 - species.color.b, species.color.a);
     ctx->fill();
 
     // Right:
-    sim::Vec2 right = calc_sensor_offset_center(species, 90 - species.sensorAngleDegrees);
+    sim::Vec2 right = calc_sensor_pos(species, 90 + species.sensorAngleDegrees);
     right.x *= totalWidthFactor;
     right.y *= totalWidthFactor;
 
-    ctx->rectangle(padding + right.x - actSensorSizeHalf, right.y + padding - actSensorSizeHalf, actSensorSize, actSensorSize);
+    ctx->rectangle(padding + right.x - actSensorSizeHalf, padding + right.y - actSensorSizeHalf, actSensorSize, actSensorSize);
     ctx->set_source_rgba(1 - species.color.r, 1 - species.color.g, 1 - species.color.b, species.color.a);
     ctx->fill();
 

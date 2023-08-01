@@ -22,7 +22,7 @@ class SpeciesPreviewCairoWidget : public Gtk::DrawingArea {
 
  private:
     void prep_widget();
-    static sim::Vec2 calc_sensor_offset_center(sim::Species& species, float angel);
+    static sim::Vec2 calc_sensor_pos(sim::Species& species, float angel);
 
     //-----------------------------Events:-----------------------------
     void on_draw_handler(const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height) const;
