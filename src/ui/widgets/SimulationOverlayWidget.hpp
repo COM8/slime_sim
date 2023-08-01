@@ -21,6 +21,7 @@ class SimulationOverlayWidget : public Gtk::Overlay {
     explicit SimulationOverlayWidget(SimulationWidget* simWidget);
 
     void set_debug_overlay_enabled(bool enableDebugOverlay);
+    void set_species_preview_overlay_enabled(bool enableSpeciesPreviewOverlay);
     void set_species_index(size_t speciesIndex);
 
  protected:

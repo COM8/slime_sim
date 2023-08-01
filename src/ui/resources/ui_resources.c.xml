@@ -27,5 +27,6 @@
     <file preprocess="xml-stripblanks">icons/scalable/action/rotation-allowed-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/plus-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/transparent-background-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/background-app-ghost-symbolic.svg</file>
   </gresource>
 </gresources>

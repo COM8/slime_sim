@@ -47,6 +47,10 @@ void SimulationOverlayWidget::set_debug_overlay_enabled(bool enableDebugOverlay)
     this->enableDebugOverlay = enableDebugOverlay;
 }
 
+void SimulationOverlayWidget::set_species_preview_overlay_enabled(bool enableSpeciesPreviewOverlay) {
+    speciesPreviewWidget.set_visible(enableSpeciesPreviewOverlay);
+}
+
 void SimulationOverlayWidget::set_species_index(size_t speciesIndex) {
     speciesPreviewWidget.set_species_index(speciesIndex);
 }
@@ -90,7 +94,7 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
 }
 
 bool SimulationOverlayWidget::on_tick(const Glib::RefPtr<Gdk::FrameClock>& /*frameClock*/) {
-    queue_draw();
+    drawingArea.queue_draw();
     return true;
 }
 }  // namespace ui::widgets

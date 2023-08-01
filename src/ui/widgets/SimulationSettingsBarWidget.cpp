@@ -66,6 +66,13 @@ void SimulationSettingsBarWidget::prep_widget() {
     debugOverlayTBtn.set_tooltip_text("Toggle debug overlay");
     mainBox.append(debugOverlayTBtn);
 
+    speciesPreviewOverlayTBtn.property_active().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_species_preview_overlay_toggled));
+    speciesPreviewOverlayTBtn.set_icon_name("background-app-ghost-symbolic");
+
+    speciesPreviewOverlayTBtn.set_active();
+    speciesPreviewOverlayTBtn.set_tooltip_text("Toggle species preview overlay");
+    mainBox.append(speciesPreviewOverlayTBtn);
+
     zoomInBtn.signal_clicked().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_zoom_in_clicked));
     zoomInBtn.set_tooltip_text("Zoom in");
     zoomInBtn.set_icon_name("zoom-in");
@@ -156,6 +163,11 @@ void SimulationSettingsBarWidget::on_render_toggled() {
 void SimulationSettingsBarWidget::on_debug_overlay_toggled() {
     assert(simOverlayWidget);
     simOverlayWidget->set_debug_overlay_enabled(debugOverlayTBtn.get_active());
+}
+
+void SimulationSettingsBarWidget::on_species_preview_overlay_toggled() {
+    assert(simOverlayWidget);
+    simOverlayWidget->set_species_preview_overlay_enabled(speciesPreviewOverlayTBtn.get_active());
 }
 
 void SimulationSettingsBarWidget::on_zoom_in_clicked() {

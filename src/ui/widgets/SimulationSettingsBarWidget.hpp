@@ -27,6 +27,7 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     Gtk::ToggleButton simulateTBtn;
     Gtk::ToggleButton renderTBtn;
     Gtk::ToggleButton debugOverlayTBtn;
+    Gtk::ToggleButton speciesPreviewOverlayTBtn;
 
     Gtk::Button zoomInBtn;
     Gtk::Button zoomOutBtn;
@@ -53,6 +54,7 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     void on_simulate_toggled();
     void on_render_toggled();
     void on_debug_overlay_toggled();
+    void on_species_preview_overlay_toggled();
     void on_zoom_in_clicked();
     void on_zoom_out_clicked();
     void on_zoom_reset_clicked();
