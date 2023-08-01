@@ -92,6 +92,7 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
     stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n\n", simulation->get_width(), simulation->get_height());
     stats += "F - Toggle full screen\n";
     stats += "P - Toggle simulation running\n";
+    stats += "T - Toggle title\n";
     draw_text(stats, ctx, 5, 5);
 }
 

@@ -3,6 +3,7 @@
 #include "ui/widgets/SimulationOverlayWidget.hpp"
 #include "ui/widgets/SimulationSettingsBarWidget.hpp"
 #include "ui/widgets/SimulationWidget.hpp"
+#include "ui/widgets/TitleWidget.hpp"
 #include <gtkmm.h>
 #include <gtkmm/box.h>
 #include <gtkmm/enums.h>
@@ -15,8 +16,10 @@ class MainWindow : public Gtk::Window {
     widgets::SimulationWidget simulationWidget;
     widgets::SimulationOverlayWidget simulationOverlayWidget;
     widgets::SimulationSettingsBarWidget simulationSettingsBarWidget;
+    widgets::TitleWidget titleWidget;
     Gtk::Box mainBox{Gtk::Orientation::VERTICAL};
     Gtk::Overlay simulationOverlay;
+    Gtk::Overlay titleOverlay;
 
  public:
     MainWindow();

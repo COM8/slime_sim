@@ -36,7 +36,13 @@ void MainWindow::prep_window() {
     simulationOverlay.set_child(simulationWidget);
     simulationOverlay.add_overlay(simulationOverlayWidget);
     simulationOverlay.set_expand();
-    mainBox.append(simulationOverlay);
+
+    titleOverlay.set_child(simulationOverlay);
+    titleOverlay.add_overlay(titleWidget);
+    titleOverlay.set_expand();
+    titleWidget.set_expand();
+    titleWidget.set_visible(false);
+    mainBox.append(titleOverlay);
 
     set_child(mainBox);
 }
@@ -68,6 +74,11 @@ bool MainWindow::on_key_pressed(guint keyVal, guint /*keyCode*/, Gdk::ModifierTy
     // Toggle simulation
     if ((keyVal == GDK_KEY_P) || (keyVal == GDK_KEY_p)) {
         sim::Simulation::get_instance()->set_running(!sim::Simulation::get_instance()->is_running());
+    }
+
+    // Toggle simulation
+    if ((keyVal == GDK_KEY_T) || (keyVal == GDK_KEY_t)) {
+        titleWidget.set_visible(!titleWidget.get_visible());
     }
     return false;
 }
