@@ -83,7 +83,7 @@ float color_dist(vec4 colorSpecies, vec4 colorPixel) {
 }
 
 /**
- * Higher values returd get preffered more.
+ * Higher values returned get preffered more.
  **/
 float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
 	float sensorAngle = slimes[index].angle + sensorAngleOffset;

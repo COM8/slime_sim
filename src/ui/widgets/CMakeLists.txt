@@ -7,7 +7,9 @@ add_library(ui_widgets SimulationWidget.cpp
                        SimulationSettingsBarWidget.cpp
                        SimulationSettingsBarWidget.hpp
                        SpeciesPreviewWidget.cpp
-                       SpeciesPreviewWidget.hpp)
+                       SpeciesPreviewWidget.hpp
+                       SpeciesPreviewCairoWidget.cpp
+                       SpeciesPreviewCairoWidget.hpp)
 
 target_link_libraries(ui_widgets PRIVATE PkgConfig::GTKMM logger PkgConfig::EPOXY fmt::fmt ui_widgets_opengl ui_widgets_opengl_fb sim)
 

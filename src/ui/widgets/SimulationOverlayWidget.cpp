@@ -1,11 +1,13 @@
 #include "SimulationOverlayWidget.hpp"
 #include "spdlog/fmt/bundled/core.h"
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <optional>
 #include <string>
 #include <bits/chrono.h>
 #include <fmt/core.h>
+#include <gtkmm/enums.h>
 
 namespace ui::widgets {
 SimulationOverlayWidget::SimulationOverlayWidget(SimulationWidget* simWidget) : simWidget(simWidget) {
@@ -17,6 +19,7 @@ void SimulationOverlayWidget::prep_widget() {
     drawingArea.add_tick_callback(sigc::mem_fun(*this, &SimulationOverlayWidget::on_tick));
     add_overlay(drawingArea);
     set_child(speciesPreviewWidget);
+    set_species_preview_widget_size();
 
     // Disable focus since this widget is just a overlay for the actual simulation:
     set_can_target(false);
@@ -46,6 +49,18 @@ void SimulationOverlayWidget::set_debug_overlay_enabled(bool enableDebugOverlay)
 
 void SimulationOverlayWidget::set_species_index(size_t speciesIndex) {
     speciesPreviewWidget.set_species_index(speciesIndex);
+}
+
+void SimulationOverlayWidget::set_species_preview_widget_size() {
+    // TODO: Subscribe to size changes and adopt based on the size
+    /*static constexpr int MAX_SIZE = 200;
+
+    int sizeRequest = get_width() > get_height() ? static_cast<int>(std::round(static_cast<double>(get_height()) * 0.1)) : static_cast<int>(std::round(static_cast<double>(get_width()) * 0.1));
+    sizeRequest = std::min(sizeRequest, MAX_SIZE);
+
+    speciesPreviewWidget.set_size_request(sizeRequest, sizeRequest);*/
+
+    speciesPreviewWidget.set_size_request(200, 200);
 }
 
 //-----------------------------Events:-----------------------------

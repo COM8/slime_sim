@@ -10,7 +10,6 @@ struct Slime {
     uint32_t speciesIndex{0};
     float angle{0};
 
- public:
     Slime(Vec4U&& randState, Vec2&& pos, uint32_t speciesIndex, float angle);
 
     static float random_angle();
