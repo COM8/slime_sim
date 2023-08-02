@@ -56,8 +56,8 @@ sudo dnf install mesa-libEGL-devel glslc glslang
 ### Compiling
 
 ```
-git clone https://github.com/COM8/slime-sim.git
-cd slime-sim
+git clone https://github.com/COM8/slime_sim.git
+cd slime_sim
 mkdir build
 cd build
 cmake ..
