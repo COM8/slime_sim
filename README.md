@@ -24,8 +24,8 @@ LIBGL_ALWAYS_SOFTWARE=0 ./src/sSim
 
 ### Power Consumption
 
-To compare power consumption between software and hardware rendering on the CPU and its iGPU we can read the [Model-specific register](https://en.wikipedia.org/wiki/Model-specific_register) to get the current CPU package power consumption.
-In order to simplify this task we use [`turbostat`](https://www.linux.org/docs/man8/turbostat.html) it's part of the `kernel-tools` package (`sudo dnf install kernel-tools`).
+To compare power consumption between software and hardware rendering on the CPU and its iGPU we can read the [model-specific register](https://en.wikipedia.org/wiki/Model-specific_register) to get the current CPU package power consumption.
+In order to simplify this task we use [`turbostat`](https://www.linux.org/docs/man8/turbostat.html). It's a part of the `kernel-tools` package (`sudo dnf install kernel-tools`).
 
 ```
 sudo turbostat --Summary --quiet --interval 1 --show GFXWatt --show CorWatt --show PkgWatt
