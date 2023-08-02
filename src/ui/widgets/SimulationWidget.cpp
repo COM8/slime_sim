@@ -73,6 +73,14 @@ void SimulationWidget::set_species_add_enabled(bool speciedAddEnabled) {
     this->speciedAddEnabled = speciedAddEnabled;
 }
 
+const unsigned char* SimulationWidget::get_device_vendor_name() {
+    return glGetString(GL_VENDOR);
+}
+
+const unsigned char* SimulationWidget::get_device_name() {
+    return glGetString(GL_RENDERER);
+}
+
 //-----------------------------Events:-----------------------------
 bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*ctx*/) {
     assert(simulation);

@@ -1,5 +1,6 @@
 #include "SimulationOverlayWidget.hpp"
 #include "spdlog/fmt/bundled/core.h"
+#include "ui/widgets/SimulationWidget.hpp"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -90,6 +91,9 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
     stats += fmt::format(local, "Slimes: {:L}, Species: {:L}\n", simulation->get_slimes()->size(), simulation->get_species()->size());
     stats += fmt::format("Zoom: {}\n", simWidget->get_zoom_factor());
     stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n\n", simulation->get_width(), simulation->get_height());
+
+    stats += fmt::format("Vendor: {}\nModel: {}\n\n", SimulationWidget::get_device_vendor_name(), SimulationWidget::get_device_name());
+
     stats += "F - Toggle full screen\n";
     stats += "P - Toggle simulation running\n";
     stats += "T - Toggle title\n";

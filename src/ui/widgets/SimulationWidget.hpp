@@ -46,6 +46,9 @@ class SimulationWidget : public Gtk::ScrolledWindow {
     [[nodiscard]] const sim::TickRate& get_fps() const;
     [[nodiscard]] const sim::TickDurationHistory& get_fps_history() const;
 
+    static const unsigned char* get_device_vendor_name();
+    static const unsigned char* get_device_name();
+
     void set_zoom_factor(float zoomFactor);
     [[nodiscard]] float get_zoom_factor() const;
     void set_species_index(uint32_t speciesIndex);
