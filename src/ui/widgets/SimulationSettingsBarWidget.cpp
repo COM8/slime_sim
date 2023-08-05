@@ -76,7 +76,7 @@ void SimulationSettingsBarWidget::prep_widget() {
     zoomInBtn.signal_clicked().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_zoom_in_clicked));
     zoomInBtn.set_tooltip_text("Zoom in");
     zoomInBtn.set_icon_name("zoom-in");
-    zoomInBtn.set_sensitive(false);
+    zoomInBtn.set_sensitive(true);
     zoomBox.append(zoomInBtn);
 
     zoomOutBtn.signal_clicked().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_zoom_out_clicked));
@@ -174,8 +174,8 @@ void SimulationSettingsBarWidget::on_zoom_in_clicked() {
     assert(simWidget);
     float zoomFactor = simWidget->get_zoom_factor();
     zoomFactor *= 1.25;
-    if (zoomFactor >= 1) {
-        zoomFactor = 1;
+    if (zoomFactor >= 2) {
+        zoomFactor = 2;
         zoomInBtn.set_sensitive(false);
     }
     simWidget->set_zoom_factor(zoomFactor);
@@ -192,7 +192,6 @@ void SimulationSettingsBarWidget::on_zoom_out_clicked() {
 void SimulationSettingsBarWidget::on_zoom_reset_clicked() {
     assert(simWidget);
     simWidget->set_zoom_factor(1.0);
-    zoomInBtn.set_sensitive(false);
 }
 
 void SimulationSettingsBarWidget::on_zoom_fit_clicked() {
