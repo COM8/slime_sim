@@ -17,7 +17,7 @@ struct SpeciesDescriptor {
     float turnSpeed;
 
     float sensorAngleDegrees;
-	float sensorOffsetDst;
+    float sensorOffsetDst;
     int sensorSize;
 
     float padding0;
@@ -37,16 +37,16 @@ layout(std430, binding = 3) buffer bufAttr {
 // Source: https://en.wikipedia.org/wiki/Xorshift
 // ------------------------------------------------------------------------------------
 uint next(inout uvec4 state) {
-	uint t = state.w;
+    uint t = state.w;
     uint s = state.x;
-	state.w = state.z;
-	state.z = state.y;
-	state.y = s;
+    state.w = state.z;
+    state.z = state.y;
+    state.y = s;
 
-	t ^= t << 11;
-	t ^= t >> 8;
+    t ^= t << 11;
+    t ^= t >> 8;
     state.x = t ^ s ^ (s >> 19);
-	return state.x;
+    return state.x;
 }
 
 float next_float(inout uvec4 state) {
@@ -60,10 +60,10 @@ uint next(inout uvec4 state, uint min, uint max) {
 
 // ------------------------------------------------------------------------------------
 vec2 rotate(vec2 v, float a) {
-	float s = sin(a);
-	float c = cos(a);
-	mat2 m = mat2(c, -s, s, c);
-	return m * v;
+    float s = sin(a);
+    float c = cos(a);
+    mat2 m = mat2(c, -s, s, c);
+    return m * v;
 }
 
 float dot_product(vec2 v1, vec2 v2) {
@@ -78,86 +78,86 @@ float get_vec_dist_degree(vec2 v1, vec2 v2) {
 }
 
 float color_dist(vec4 colorSpecies, vec4 colorPixel) {
-	colorSpecies *= colorPixel.w;
-	return -(abs(colorSpecies.x - colorPixel.x) + abs(colorSpecies.y - colorPixel.y) + abs(colorSpecies.z - colorPixel.z));
+    colorSpecies *= colorPixel.w;
+    return -(abs(colorSpecies.x - colorPixel.x) + abs(colorSpecies.y - colorPixel.y) + abs(colorSpecies.z - colorPixel.z));
 }
 
 /**
  * Higher values returned get preffered more.
  **/
 float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
-	float sensorAngle = slimes[index].angle + sensorAngleOffset;
-	vec2 sensorDir = vec2(cos(sensorAngle), sin(sensorAngle));
+    float sensorAngle = slimes[index].angle + sensorAngleOffset;
+    vec2 sensorDir = vec2(cos(sensorAngle), sin(sensorAngle));
 
-	vec2 sensorPos = slimes[index].pos + sensorDir * species[speciesIndex].sensorOffsetDst;
-	int sensorCentreX = int(round(sensorPos.x));
-	int sensorCentreY = int(round(sensorPos.y));
+    vec2 sensorPos = slimes[index].pos + sensorDir * species[speciesIndex].sensorOffsetDst;
+    int sensorCentreX = int(round(sensorPos.x));
+    int sensorCentreY = int(round(sensorPos.y));
 
-	float sum = 0;
+    float sum = 0;
 
     // ivec4 senseWeight = ivec4(1);
 
     int sensorSize = species[speciesIndex].sensorSize;
-	for (int offsetX = -sensorSize; offsetX <= sensorSize; offsetX ++) {
-		for (int offsetY = -sensorSize; offsetY <= sensorSize; offsetY ++) {
-			int sampleX = min(worldSizeX - 1, max(0, sensorCentreX + offsetX));
-			int sampleY = min(worldSizeY - 1, max(0, sensorCentreY + offsetY));
+    for (int offsetX = -sensorSize; offsetX <= sensorSize; offsetX ++) {
+        for (int offsetY = -sensorSize; offsetY <= sensorSize; offsetY ++) {
+            int sampleX = min(worldSizeX - 1, max(0, sensorCentreX + offsetX));
+            int sampleY = min(worldSizeY - 1, max(0, sensorCentreY + offsetY));
             ivec2 texelCoord = ivec2(sampleX, sampleY);
             vec4 pixel = imageLoad(slimeImg, texelCoord);
 
-			// sum += dot(senseWeight, pixel);
-			sum += color_dist(species[speciesIndex].color, pixel);
-		}
-	}
+            // sum += dot(senseWeight, pixel);
+            sum += color_dist(species[speciesIndex].color, pixel);
+        }
+    }
 
-	return sum;
+    return sum;
 }
 
 void move(uint index) {
-	vec2 sPos = slimes[index].pos;
+    vec2 sPos = slimes[index].pos;
     uint speciesIndex = slimes[index].speciesIndex;
 
-	// Steer based on sensory data
-	float sensorAngleRad = species[speciesIndex].sensorAngleDegrees * (3.1415 / 180);
-	float weightForward = sense(index, speciesIndex, 0);
-	float weightLeft = sense(index, speciesIndex, sensorAngleRad);
-	float weightRight = sense(index, speciesIndex, -sensorAngleRad);
+    // Steer based on sensory data
+    float sensorAngleRad = species[speciesIndex].sensorAngleDegrees * (3.1415 / 180);
+    float weightForward = sense(index, speciesIndex, 0);
+    float weightLeft = sense(index, speciesIndex, sensorAngleRad);
+    float weightRight = sense(index, speciesIndex, -sensorAngleRad);
 
-	float randomSteerStrength = next_float(slimes[index].randState);
-	float turnSpeed = species[speciesIndex].turnSpeed * 2 * 3.1415;
+    float randomSteerStrength = next_float(slimes[index].randState);
+    float turnSpeed = species[speciesIndex].turnSpeed * 2 * 3.1415;
 
-	// Continue in same direction
-	if (weightForward > weightLeft && weightForward > weightRight) {
-		slimes[index].angle += 0;
-	}
-	else if (weightForward < weightLeft && weightForward < weightRight) {
-		slimes[index].angle += (randomSteerStrength - 0.5) * 2 * turnSpeed;
-	}
-	// Turn right
-	else if (weightRight > weightLeft) {
-		slimes[index].angle -= randomSteerStrength * turnSpeed;
-	}
-	// Turn left
-	else if (weightLeft > weightRight) {
-		slimes[index].angle += randomSteerStrength * turnSpeed;
-	}
+    // Continue in same direction
+    if (weightForward > weightLeft && weightForward > weightRight) {
+        slimes[index].angle += 0;
+    }
+    else if (weightForward < weightLeft && weightForward < weightRight) {
+        slimes[index].angle += (randomSteerStrength - 0.5) * 2 * turnSpeed;
+    }
+    // Turn right
+    else if (weightRight > weightLeft) {
+        slimes[index].angle -= randomSteerStrength * turnSpeed;
+    }
+    // Turn left
+    else if (weightLeft > weightRight) {
+        slimes[index].angle += randomSteerStrength * turnSpeed;
+    }
 
 
-	// Update position
-	vec2 direction = vec2(cos(slimes[index].angle), sin(slimes[index].angle));
-	vec2 newPos = sPos + direction * species[speciesIndex].moveSpeed;
+    // Update position
+    vec2 direction = vec2(cos(slimes[index].angle), sin(slimes[index].angle));
+    vec2 newPos = sPos + direction * species[speciesIndex].moveSpeed;
 
-	
-	// Clamp position to map boundaries, and pick new random move dir if hit boundary
-	if (newPos.x < 0 || newPos.x >= worldSizeX || newPos.y < 0 || newPos.y >= worldSizeY) {
-		float randomAngle = next_float(slimes[index].randState) * 2 * 3.1415;
 
-		newPos.x = min(worldSizeX - 1 ,max(0, newPos.x));
-		newPos.y = min(worldSizeY - 1, max(0, newPos.y));
-		slimes[index].angle = randomAngle;
-	}
-	
-	slimes[index].pos = newPos;
+    // Clamp position to map boundaries, and pick new random move dir if hit boundary
+    if (newPos.x < 0 || newPos.x >= worldSizeX || newPos.y < 0 || newPos.y >= worldSizeY) {
+        float randomAngle = next_float(slimes[index].randState) * 2 * 3.1415;
+
+        newPos.x = min(worldSizeX - 1 ,max(0, newPos.x));
+        newPos.y = min(worldSizeY - 1, max(0, newPos.y));
+        slimes[index].angle = randomAngle;
+    }
+
+    slimes[index].pos = newPos;
 }
 
 void draw(uint index) {
