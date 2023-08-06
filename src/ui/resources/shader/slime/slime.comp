@@ -79,7 +79,7 @@ float get_vec_dist_degree(vec2 v1, vec2 v2) {
 
 float color_dist(vec4 colorSpecies, vec4 colorPixel) {
     colorSpecies *= colorPixel.w;
-    return -(abs(colorSpecies.x - colorPixel.x) + abs(colorSpecies.y - colorPixel.y) + abs(colorSpecies.z - colorPixel.z));
+    return abs(colorSpecies.x - colorPixel.x) + abs(colorSpecies.y - colorPixel.y) + abs(colorSpecies.z - colorPixel.z);
 }
 
 /**
@@ -113,8 +113,7 @@ float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
     return sum;
 }
 
-void move(uint index) {
-    vec2 sPos = slimes[index].pos;
+void move_sensing(uint index) {
     uint speciesIndex = slimes[index].speciesIndex;
 
     // Steer based on sensory data
@@ -141,23 +140,32 @@ void move(uint index) {
     else if (weightLeft > weightRight) {
         slimes[index].angle += randomSteerStrength * turnSpeed;
     }
+}
 
-
-    // Update position
-    vec2 direction = vec2(cos(slimes[index].angle), sin(slimes[index].angle));
-    vec2 newPos = sPos + direction * species[speciesIndex].moveSpeed;
-
-
+void move_clamp(uint index) {
     // Clamp position to map boundaries, and pick new random move dir if hit boundary
+    vec2 newPos = slimes[index].pos;
     if (newPos.x < 0 || newPos.x >= worldSizeX || newPos.y < 0 || newPos.y >= worldSizeY) {
         float randomAngle = next_float(slimes[index].randState) * 2 * 3.1415;
 
-        newPos.x = min(worldSizeX - 1 ,max(0, newPos.x));
+        newPos.x = min(worldSizeX - 1, max(0, newPos.x));
         newPos.y = min(worldSizeY - 1, max(0, newPos.y));
         slimes[index].angle = randomAngle;
     }
-
     slimes[index].pos = newPos;
+}
+
+void move(uint index) {
+    // Update the slime direction angle
+    move_sensing(index);
+
+    // Update position
+    uint speciesIndex = slimes[index].speciesIndex;
+    vec2 direction = vec2(cos(slimes[index].angle), sin(slimes[index].angle));
+    slimes[index].pos = slimes[index].pos + direction * species[speciesIndex].moveSpeed;
+
+    // Ensure the new position is inside the world boundary
+    move_clamp(index);
 }
 
 void draw(uint index) {
