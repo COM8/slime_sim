@@ -24,22 +24,20 @@ bool Simulation::is_initialized() const {
 }
 
 void Simulation::init() {
-    species->emplace_back(Species(Rgba::random_color(), 1, 0.25, 30, 35, 1));
-    for (size_t i = 0; i < INITIAL_NUM_SLIMES / 2; i++) {
-        slimes->emplace_back(Slime(
-            Vec4U::random_vec(),
-            Vec2::random_vec(static_cast<float>(width) / 2, static_cast<float>(width), 0, static_cast<float>(height)),
-            0,
-            Slime::random_angle()));
-    }
+    const size_t SPECIES_COUNT = 1;
 
-    species->emplace_back(Species(Rgba::random_color(), 1, 0.05, 20, 35, 1));
-    for (size_t i = 0; i < INITIAL_NUM_SLIMES / 2; i++) {
-        slimes->emplace_back(Slime(
-            Vec4U::random_vec(),
-            Vec2::random_vec(0, static_cast<float>(width) / 2, 0, static_cast<float>(height)),
-            1,
-            Slime::random_angle()));
+    for (size_t i = 0; i < SPECIES_COUNT; i++) {
+        species->emplace_back(Species(Rgba::random_color(), 1, 0.15, 30, 10, 2));
+        float spawnStartX = (static_cast<float>(width) / static_cast<float>(SPECIES_COUNT)) * static_cast<float>(i);
+        float spawnEndY = (static_cast<float>(width) / static_cast<float>(SPECIES_COUNT)) * static_cast<float>(i + 1);
+
+        for (size_t e = 0; e < INITIAL_NUM_SLIMES / SPECIES_COUNT; e++) {
+            slimes->emplace_back(Slime(
+                Vec4U::random_vec(),
+                Vec2::random_vec(spawnStartX, spawnEndY, 0, static_cast<float>(height)),
+                i,
+                Slime::random_angle()));
+        }
     }
 
     initialized = true;
