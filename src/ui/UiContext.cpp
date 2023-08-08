@@ -1,4 +1,6 @@
 #include "UiContext.hpp"
+#include <chrono>
+#include <string>
 #include <adwaita.h>
 #include <gdkmm/display.h>
 #include <gtkmm/icontheme.h>
@@ -10,7 +12,7 @@ int UiContext::run(int argc, char** argv) {
     adw_init();
 
     // Create the main GTK application:
-    app = Gtk::Application::create("de.ssim");
+    app = Gtk::Application::create("de.ssim." + std::to_string(std::chrono::system_clock::now().time_since_epoch().count()));
 
     // Add icon paths:
     Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/ui/icons/scalable/action");
