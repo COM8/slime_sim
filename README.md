@@ -34,6 +34,11 @@ sudo turbostat --Summary --quiet --interval 1 --show GFXWatt --show CorWatt --sh
 * `GFXWatt` Watts consumed by the Graphics part of the package -- available only on client processors.
 * `CorWatt` Watts consumed by the core part of the package.
 
+With [`ttyplot`](https://github.com/tenox7/ttyplot):
+```
+sudo turbostat --Summary --quiet --interval 1 --show GFXWatt --show CorWatt --show PkgWatt | gawk '{print $1+$2, "\t", $3; fflush();}' | ttyplot -2 -s 30 -t "CPU/iGPU Watt" -u "Watt"
+```
+
 ## Known Issues
 
 **Q:** Rendering fails/no new images get rendered.<br>
