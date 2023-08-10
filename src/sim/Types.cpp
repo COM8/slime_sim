@@ -13,8 +13,8 @@ double Vec2::dist(const Vec2& other) const {
 Vec2 Vec2::random_vec(float x_min, float x_max, float y_min, float y_max) {
     static std::random_device device;
     static std::mt19937 gen(device());
-    static std::uniform_real_distribution<float> distr_x(0, x_max);
-    static std::uniform_real_distribution<float> distr_y(0, y_max);
+    std::uniform_real_distribution<float> distr_x(0, x_max);
+    std::uniform_real_distribution<float> distr_y(0, y_max);
 
     // Reuse existing distributions:
     if (distr_x.a() != x_min || distr_x.b() != x_max) {

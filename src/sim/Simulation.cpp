@@ -1,5 +1,7 @@
 #include "Simulation.hpp"
+#include "sim/Types.hpp"
 #include <cmath>
+#include <numbers>
 #include <random>
 
 namespace sim {
@@ -24,8 +26,8 @@ bool Simulation::is_initialized() const {
 }
 
 void Simulation::init() {
-    const size_t SPECIES_COUNT = 1;
-
+    // Default:
+    const size_t SPECIES_COUNT = 2;
     for (size_t i = 0; i < SPECIES_COUNT; i++) {
         species->emplace_back(Species(Rgba::random_color(), 1, 0.15, 30, 10, 2));
         float spawnStartX = (static_cast<float>(width) / static_cast<float>(SPECIES_COUNT)) * static_cast<float>(i);
@@ -39,6 +41,40 @@ void Simulation::init() {
                 Slime::random_angle()));
         }
     }
+
+    // Fancy circle
+    /*const size_t SPECIES_COUNT = 1;
+    for (size_t i = 0; i < SPECIES_COUNT; i++) {
+        species->emplace_back(Species(Rgba::random_color(), 1, 0.01, 30, 10, 2));
+
+        for (size_t e = 0; e < INITIAL_NUM_SLIMES / SPECIES_COUNT; e++) {
+            float angleRadian = static_cast<float>(((2.0F * std::numbers::pi) / INITIAL_NUM_SLIMES) * static_cast<double>(e));
+            float spawnX = (static_cast<float>(width) / 2) + (100 * std::sin(angleRadian));
+            float spawnY = (static_cast<float>(height) / 2) + (100 * std::cos(angleRadian));
+            slimes->emplace_back(Slime(
+                Vec4U::random_vec(),
+                Vec2{spawnX, spawnY},
+                i,
+                angleRadian));
+        }
+    }*/
+
+    // Round slime distribution
+    /*const size_t SPECIES_COUNT = 1;
+    for (size_t i = 0; i < SPECIES_COUNT; i++) {
+        species->emplace_back(Species(Rgba::random_color(), 1, 0.15, 30, 10, 2));
+
+        for (size_t e = 0; e < INITIAL_NUM_SLIMES / SPECIES_COUNT; e++) {
+            float angleRadian = static_cast<float>(((2.0F * std::numbers::pi) / INITIAL_NUM_SLIMES) * static_cast<double>(e));
+            float spawnX = (static_cast<float>(width) / 2) + (100 * std::sin(angleRadian));
+            float spawnY = (static_cast<float>(height) / 2) + (100 * std::cos(angleRadian));
+            slimes->emplace_back(Slime(
+                Vec4U::random_vec(),
+                Vec2{spawnX, spawnY},
+                i,
+                angleRadian));
+        }
+    }*/
 
     initialized = true;
 }
