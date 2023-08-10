@@ -1,5 +1,6 @@
 #include "SimulationWidget.hpp"
 #include "logger/Logger.hpp"
+#include "sim/Species.hpp"
 #include "spdlog/fmt/bundled/core.h"
 #include "spdlog/spdlog.h"
 #include <cassert>
@@ -100,6 +101,23 @@ bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*c
         glDisable(GL_DEPTH_TEST);
 
         if (simulation->is_running()) {
+            // Check if we have to change the color:
+            if (simulation->is_color_change_enabled()) {
+                sinceLastReset += std::chrono::high_resolution_clock::now() - lastFrame;
+
+                if (std::chrono::floor<std::chrono::seconds>(sinceLastReset.time_since_epoch()) > resetColorTimer) {
+                    sinceLastReset = std::chrono::high_resolution_clock::time_point{};
+                    SPDLOG_INFO("Color change trigger hit. Changing color...");
+                    for (sim::Species& species : *simulation->get_species()) {
+                        species.color = sim::Rgba::random_color();
+                    }
+                    simulation->set_species_need_sync(true);
+                }
+            }
+            else {
+                sinceLastReset = std::chrono::high_resolution_clock::time_point{};
+            }
+
             // 1.0 Draw slimes to buffer:
             slimeFrameBuffer.bind();
             // 1.1 Blur old slime image:
@@ -113,6 +131,7 @@ bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*c
             // 1.2 Draw slimes:
             slimeObj.render();
         }
+        lastFrame = std::chrono::high_resolution_clock::now();
 
         // 2.0 Draw to screen:
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFb);

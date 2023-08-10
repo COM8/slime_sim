@@ -27,4 +27,6 @@ set(RESOURCE_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/theme.css
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/object-straighten-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/rotation-allowed-symbolic.svg
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/plus-symbolic.svg
-    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/transparent-background-symbolic.svg PARENT_SCOPE)
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/transparent-background-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/background-app-ghost-symbolic.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/color-symbolic.svg PARENT_SCOPE)

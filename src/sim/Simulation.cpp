@@ -51,6 +51,14 @@ bool Simulation::is_blur_enabled() const {
     return blurEnables;
 }
 
+bool Simulation::is_color_change_enabled() const {
+    return colorChange;
+}
+
+void Simulation::set_color_change_enabled(size_t enableColorChange) {
+    colorChange = enableColorChange;
+}
+
 void Simulation::set_running(bool running) {
     this->running = running;
 }

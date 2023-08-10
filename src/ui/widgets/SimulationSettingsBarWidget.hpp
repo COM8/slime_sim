@@ -28,6 +28,7 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     Gtk::ToggleButton renderTBtn;
     Gtk::ToggleButton debugOverlayTBtn;
     Gtk::ToggleButton speciesPreviewOverlayTBtn;
+    Gtk::ToggleButton colorChangeTBtn;
 
     Gtk::Button zoomInBtn;
     Gtk::Button zoomOutBtn;
@@ -67,5 +68,6 @@ class SimulationSettingsBarWidget : public Gtk::Box {
     void on_species_sensor_offset_changed(double value);
     void on_species_selection_changed();
     void on_species_add_slimes_toggled();
+    void on_color_change_toggled();
 };
 }  // namespace ui::widgets

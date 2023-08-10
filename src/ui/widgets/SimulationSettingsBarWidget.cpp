@@ -73,6 +73,13 @@ void SimulationSettingsBarWidget::prep_widget() {
     speciesPreviewOverlayTBtn.set_tooltip_text("Toggle species preview overlay");
     mainBox.append(speciesPreviewOverlayTBtn);
 
+    colorChangeTBtn.property_active().signal_changed().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_color_change_toggled));
+    colorChangeTBtn.set_icon_name("color-symbolic");
+
+    colorChangeTBtn.set_active(false);
+    colorChangeTBtn.set_tooltip_text("Toggle automatic color change");
+    mainBox.append(colorChangeTBtn);
+
     zoomInBtn.signal_clicked().connect(sigc::mem_fun(*this, &SimulationSettingsBarWidget::on_zoom_in_clicked));
     zoomInBtn.set_tooltip_text("Zoom in");
     zoomInBtn.set_icon_name("zoom-in");
@@ -168,6 +175,11 @@ void SimulationSettingsBarWidget::on_debug_overlay_toggled() {
 void SimulationSettingsBarWidget::on_species_preview_overlay_toggled() {
     assert(simOverlayWidget);
     simOverlayWidget->set_species_preview_overlay_enabled(speciesPreviewOverlayTBtn.get_active());
+}
+
+void SimulationSettingsBarWidget::on_color_change_toggled() {
+    assert(simOverlayWidget);
+    simulation->set_color_change_enabled(colorChangeTBtn.get_active());
 }
 
 void SimulationSettingsBarWidget::on_zoom_in_clicked() {

@@ -15,6 +15,7 @@ class Simulation {
     bool initialized{false};
     bool running{false};
     bool blurEnables{true};
+    bool colorChange{false};
 
     bool slimesNeedSync{true};
     bool speciesNeedSync{true};
@@ -32,11 +33,13 @@ class Simulation {
 
     [[nodiscard]] bool is_running() const;
     [[nodiscard]] bool is_blur_enabled() const;
+    [[nodiscard]] bool is_color_change_enabled() const;
     [[nodiscard]] size_t get_width() const;
     [[nodiscard]] size_t get_height() const;
 
     void set_running(bool running);
     void set_blur_enabled(bool blurEnables);
+    void set_color_change_enabled(size_t enableColorChange);
 
     void set_species_need_sync(bool speciesNeedSync);
     void set_slimes_need_sync(bool slimesNeedSync);

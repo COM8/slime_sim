@@ -8,6 +8,7 @@
 #include "sim/TickDurationHistory.hpp"
 #include "sim/TickRate.hpp"
 #include <array>
+#include <chrono>
 #include <memory>
 #include <epoxy/gl.h>
 #include <gtkmm.h>
@@ -23,6 +24,11 @@ class SimulationWidget : public Gtk::ScrolledWindow {
 
     sim::TickDurationHistory fpsHistory{};
     sim::TickRate fps{};
+
+    // Change the color every 15 seconds to increase the effect
+    std::chrono::seconds resetColorTimer{60};
+    std::chrono::high_resolution_clock::time_point sinceLastReset{};
+    std::chrono::high_resolution_clock::time_point lastFrame{std::chrono::high_resolution_clock::now()};
 
     // OpenGL:
     GLint defaultFb{0};
