@@ -19,12 +19,12 @@ void TitleWidget::prep_widget() {
     set_overflow(Gtk::Overflow::HIDDEN);
 }
 
-void TitleWidget::draw_text(const std::string& text, const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height, int padding) {
+void TitleWidget::draw_text(const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height, int padding) {
     ctx->save();
     Pango::FontDescription font;
     font.set_stretch(Pango::Stretch::ULTRA_EXPANDED);
     font.set_weight(Pango::Weight::BOLD);
-    Glib::RefPtr<Pango::Layout> layout = create_pango_layout(text);
+    Glib::RefPtr<Pango::Layout> layout = create_pango_layout("Simulating Boids and Slimes to\nUnderstand how GPUs Work");
     layout->set_font_description(font);
     ctx->move_to(padding, padding);
 
@@ -43,7 +43,27 @@ void TitleWidget::draw_text(const std::string& text, const Cairo::RefPtr<Cairo::
     Gdk::RGBA foreground = get_style_context()->get_color();
     ctx->set_source_rgba(foreground.get_red(), foreground.get_green(), foreground.get_blue(), foreground.get_alpha());
     layout->show_in_cairo_context(ctx);
+    ctx->restore();
 
+    ctx->save();
+    font.set_stretch(Pango::Stretch::CONDENSED);
+    font.set_weight(Pango::Weight::NORMAL);
+    layout = create_pango_layout("An Introduction into GPU Programming");
+    layout->set_font_description(font);
+    ctx->move_to((static_cast<double>(width) / 2) + padding - ((static_cast<double>(textWidth) / 3) * widthRatio), padding + (static_cast<double>(height) / 2));
+
+    layout->get_pixel_size(textWidth, textHeight);
+
+    widthRatio = static_cast<double>(width * 0.75) / textWidth;
+    heightRatio = static_cast<double>(height) / textHeight;
+    ratio = std::min(widthRatio, heightRatio);
+
+    // Scale the context by the ratio
+    ctx->scale(ratio, ratio);
+
+    // Draw font
+    ctx->set_source_rgba(foreground.get_red(), foreground.get_green(), foreground.get_blue(), foreground.get_alpha());
+    layout->show_in_cairo_context(ctx);
     ctx->restore();
 
     // Underline rectangle
@@ -62,6 +82,6 @@ void TitleWidget::draw_text(const std::string& text, const Cairo::RefPtr<Cairo::
 //-----------------------------Events:-----------------------------
 void TitleWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height) {
     const int padding = 40;
-    draw_text("Simulating Boids and Slimes to\nUnderstand how GPUs Work", ctx, width - (padding * 2), height - (padding * 2), padding);
+    draw_text(ctx, width - (padding * 2), height - (padding * 2), padding);
 }
 }  // namespace ui::widgets

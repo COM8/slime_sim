@@ -14,7 +14,7 @@ class TitleWidget : public Gtk::DrawingArea {
 
  private:
     void prep_widget();
-    void draw_text(const std::string& text, const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height, int padding);
+    void draw_text(const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height, int padding);
 
     //-----------------------------Events:-----------------------------
     void on_draw_handler(const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height);
