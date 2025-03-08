@@ -7,7 +7,7 @@ project("sSim"
     HOMEPAGE_URL "https://github.com/COM8/slime_sim")
 set(VERSION_NAME "dev")
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 macro(slime_simulator_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
@@ -91,18 +91,14 @@ clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 clear_variable(DESTINATION CMAKE_CXX_FLAGS BACKUP CMAKE_CXX_FLAGS_BKP)
 clear_variable(DESTINATION CMAKE_CXX_FLAGS_DEBUG BACKUP CMAKE_CXX_FLAGS_DEBUG_BKP)
 
-FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    GIT_TAG b6f4ceaed0a0a24ccf575fab6c56dd50ccf6f1a9) # The hash for the release commit of 8.1.1 from: https://github.com/fmtlib/fmt/releases
-FetchContent_MakeAvailable(fmt)
-include_directories(${fmt_SOURCE_DIR}/include)
-
+set(SPDLOG_USE_STD_FORMAT ON)
 set(SPDLOG_INSTALL OFF)
 FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.9.2)
+    GIT_TAG v1.15.1)
 FetchContent_MakeAvailable(spdlog)
 
 FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG v3.10.5)
+    GIT_TAG v3.11.3)
 FetchContent_MakeAvailable(json)
 
 restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)

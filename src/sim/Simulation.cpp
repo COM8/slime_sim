@@ -27,7 +27,7 @@ bool Simulation::is_initialized() const {
 
 void Simulation::init() {
     // Default:
-    const size_t SPECIES_COUNT = 2;
+    const size_t SPECIES_COUNT = 1;
     for (size_t i = 0; i < SPECIES_COUNT; i++) {
         species->emplace_back(Species(Rgba::random_color(), 1, 0.15, 30, 10, 2));
         float spawnStartX = (static_cast<float>(width) / static_cast<float>(SPECIES_COUNT)) * static_cast<float>(i);
@@ -43,7 +43,7 @@ void Simulation::init() {
     }
 
     // Fancy circle
-    /*const size_t SPECIES_COUNT = 1;
+    /*const size_t SPECIES_COUNT = 2;
     for (size_t i = 0; i < SPECIES_COUNT; i++) {
         species->emplace_back(Species(Rgba::random_color(), 1, 0.01, 30, 10, 2));
 

@@ -1,13 +1,9 @@
 #include "SimulationOverlayWidget.hpp"
-#include "spdlog/fmt/bundled/core.h"
 #include "ui/widgets/SimulationWidget.hpp"
-#include <algorithm>
 #include <cassert>
-#include <chrono>
-#include <optional>
+#include <format>
 #include <string>
 #include <bits/chrono.h>
-#include <fmt/core.h>
 #include <gtkmm/enums.h>
 
 namespace ui::widgets {
@@ -85,14 +81,15 @@ void SimulationOverlayWidget::on_draw_handler(const Cairo::RefPtr<Cairo::Context
     std::string fpsTime = simWidget->get_fps_history().get_avg_time_str();
 
     std::locale local("en_US.UTF-8");
-    // std::string stats = fmt::format("TPS: {:.2f}\nTick Time: {} (Update: {}, Collision: {})\n", tps, tpsTime, updateTickTime, collisionDetectionTickTime);
+    // std::string stats = std::format("TPS: {:.2f}\nTick Time: {} (Update: {}, Collision: {})\n", tps, tpsTime, updateTickTime, collisionDetectionTickTime);
     std::string stats;
-    stats += fmt::format("FPS: {:.2f}\nFrame Time: {}\n", fps, fpsTime);
-    stats += fmt::format(local, "Slimes: {:L}, Species: {:L}\n", simulation->get_slimes()->size(), simulation->get_species()->size());
-    stats += fmt::format("Zoom: {}\n", simWidget->get_zoom_factor());
-    stats += fmt::format(local, "Render Resolution: {:L}x{:L}\n\n", simulation->get_width(), simulation->get_height());
+    stats += std::format("FPS: {:.2f}\nFrame Time: {}\n", fps, fpsTime);
+    stats += std::format(local, "Slimes: {:L}, Species: {:L}\n", simulation->get_slimes()->size(), simulation->get_species()->size());
+    stats += std::format("Zoom: {}\n", simWidget->get_zoom_factor());
+    stats += std::format(local, "Render Resolution: {:L}x{:L}\n\n", simulation->get_width(), simulation->get_height());
 
-    stats += fmt::format("Vendor: {}\nModel: {}\n\n", SimulationWidget::get_device_vendor_name(), SimulationWidget::get_device_name());
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+    stats += std::format("Vendor: {}\nModel: {}\n\n", reinterpret_cast<const char*>(SimulationWidget::get_device_vendor_name()), reinterpret_cast<const char*>(SimulationWidget::get_device_name()));
 
     stats += "F - Toggle full screen\n";
     stats += "P - Toggle simulation running\n";

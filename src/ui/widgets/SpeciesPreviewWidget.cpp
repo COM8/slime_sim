@@ -74,7 +74,7 @@ bool SpeciesPreviewWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>&
         // Fix view port so it does not only show values in range [-1,0]:
         glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
     } catch (const Gdk::GLError& gle) {
-        SPDLOG_ERROR("An error occurred in the render callback of the GLArea: {} - {} - {}", gle.domain(), gle.code(), gle.what());
+        SPDLOG_ERROR("An error occurred in the render callback of the GLArea: {} - {} - {}", gle.domain(), static_cast<uint8_t>(gle.code()), gle.what());
     }
 
     std::chrono::high_resolution_clock::time_point frameEnd = std::chrono::high_resolution_clock::now();
@@ -104,7 +104,7 @@ void SpeciesPreviewWidget::on_realized() {
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFb);
 
     } catch (const Gdk::GLError& gle) {
-        SPDLOG_ERROR("An error occurred making the context current during realize: {} - {} - {}", gle.domain(), gle.code(), gle.what());
+        SPDLOG_ERROR("An error occurred making the context current during realize: {} - {} - {}", gle.domain(), static_cast<uint8_t>(gle.code()), gle.what());
     }
 }
 
@@ -115,7 +115,7 @@ void SpeciesPreviewWidget::on_unrealized() {
 
         speciesPreviewObj.cleanup();
     } catch (const Gdk::GLError& gle) {
-        SPDLOG_ERROR("An error occurred deleting the context current during unrealize: {} - {} - {}", gle.domain(), gle.code(), gle.what());
+        SPDLOG_ERROR("An error occurred deleting the context current during unrealize: {} - {} - {}", gle.domain(), static_cast<uint8_t>(gle.code()), gle.what());
     }
 }
 }  // namespace ui::widgets

@@ -1,18 +1,14 @@
 #include "SimulationWidget.hpp"
 #include "logger/Logger.hpp"
 #include "sim/Species.hpp"
-#include "spdlog/fmt/bundled/core.h"
 #include "spdlog/spdlog.h"
 #include <cassert>
 #include <chrono>
 #include <cmath>
-#include <cstddef>
-#include <limits>
-#include <string>
+#include <cstdint>
 #include <bits/chrono.h>
 #include <epoxy/gl.h>
 #include <epoxy/gl_generated.h>
-#include <fmt/core.h>
 #include <glibconfig.h>
 #include <gtkmm/gestureclick.h>
 #include <gtkmm/gesturezoom.h>
@@ -37,6 +33,9 @@ void SimulationWidget::set_zoom_factor(float zoomFactor) {
 
 void SimulationWidget::prep_widget() {
     set_expand();
+
+    // Make sure we have OpenGL version 450 (4.5) available when using our shaders
+    glArea.set_required_version(4, 5);
 
     glArea.signal_render().connect(sigc::mem_fun(*this, &SimulationWidget::on_render_handler), true);
     glArea.signal_realize().connect(sigc::mem_fun(*this, &SimulationWidget::on_realized));
@@ -113,8 +112,7 @@ bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*c
                     }
                     simulation->set_species_need_sync(true);
                 }
-            }
-            else {
+            } else {
                 sinceLastReset = std::chrono::high_resolution_clock::time_point{};
             }
 
@@ -148,7 +146,7 @@ bool SimulationWidget::on_render_handler(const Glib::RefPtr<Gdk::GLContext>& /*c
         // 4.2 Draw texture from frame buffer:
         screenSquareObj.render();
     } catch (const Gdk::GLError& gle) {
-        SPDLOG_ERROR("An error occurred in the render callback of the GLArea: {} - {} - {}", gle.domain(), gle.code(), gle.what());
+        SPDLOG_ERROR("An error occurred in the render callback of the GLArea: {} - {} - {}", gle.domain(), static_cast<uint8_t>(gle.code()), gle.what());
     }
 
     std::chrono::high_resolution_clock::time_point frameEnd = std::chrono::high_resolution_clock::now();
@@ -185,7 +183,7 @@ void SimulationWidget::on_realized() {
         screenSquareObj.bind_texture(slimeFrameBuffer.get_texture());
         screenSquareObj.init();
     } catch (const Gdk::GLError& gle) {
-        SPDLOG_ERROR("An error occurred making the context current during realize: {} - {} - {}", gle.domain(), gle.code(), gle.what());
+        SPDLOG_ERROR("An error occurred making the context current during realize: {} - {} - {}", gle.domain(), static_cast<uint8_t>(gle.code()), gle.what());
     }
 }
 
@@ -200,7 +198,7 @@ void SimulationWidget::on_unrealized() {
 
         slimeFrameBuffer.cleanup();
     } catch (const Gdk::GLError& gle) {
-        SPDLOG_ERROR("An error occurred deleting the context current during unrealize: {} - {} - {}", gle.domain(), gle.code(), gle.what());
+        SPDLOG_ERROR("An error occurred deleting the context current during unrealize: {} - {} - {}", gle.domain(), static_cast<uint8_t>(gle.code()), gle.what());
     }
 }
 

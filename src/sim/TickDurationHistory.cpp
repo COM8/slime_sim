@@ -1,5 +1,5 @@
 #include "TickDurationHistory.hpp"
-#include <fmt/core.h>
+#include <format>
 
 namespace sim {
 TickDurationHistory::TickDurationHistory() {
@@ -48,6 +48,6 @@ std::string TickDurationHistory::get_avg_time_str() const {
             unit = "us";
         }
     }
-    return fmt::format("{:.2f}{}", ticktime, unit);
+    return std::format("{:.2f}{}", ticktime, unit);
 }
 }  // namespace sim
