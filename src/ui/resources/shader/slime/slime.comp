@@ -77,13 +77,37 @@ float get_vec_dist_degree(vec2 v1, vec2 v2) {
     return angle * (180/NC_PI);
 }
 
+/**
+ * Converts a given RGB color to OKLab color space.
+ **/
+vec3 rgbToOklab(vec3 rgb) {
+    // Matrices taken from:
+    // https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab
+
+    const mat3 lmsMat = mat3(
+        0.4122214708, 0.5363325363, 0.0514459929,
+        0.2119034982, 0.6806995451, 0.1073969566,
+        0.0883024619, 0.2817188376, 0.6299787005
+    );
+    vec3 lms = lmsMat * rgb;
+    lms = pow(lms, vec3(1.0 / 3.0));
+
+    const mat3 oklabMat = mat3(
+         0.2104542553,  0.7936177850, -0.0040720468,
+         1.9779984951, -2.4285922050,  0.4505937099,
+         0.0259040371,  0.7827717662, -0.8086757660
+    );
+    return oklabMat * lms;
+}
+
 float color_dist(vec4 colorSpecies, vec4 colorPixel) {
-    colorSpecies *= colorPixel.w;
-    return abs(colorSpecies.x - colorPixel.x) + abs(colorSpecies.y - colorPixel.y) + abs(colorSpecies.z - colorPixel.z);
+    vec3 colorSpeciesXyz = rgbToOklab(vec3(colorSpecies.x, colorSpecies.y, colorSpecies.z));
+    vec3 colorPixelXyz = rgbToOklab(vec3(colorPixel.x, colorPixel.y, colorPixel.z));
+    return length(colorSpeciesXyz - colorPixelXyz);
 }
 
 /**
- * Higher values returned get preffered more.
+ * Higher values returned get preferred more.
  **/
 float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
     float sensorAngle = slimes[index].angle + sensorAngleOffset;
@@ -116,7 +140,7 @@ float sense(uint index, uint speciesIndex, float sensorAngleOffset) {
 void move_sensing(uint index) {
     uint speciesIndex = slimes[index].speciesIndex;
 
-    // Steer based on sensory data
+    // Steer based on sensory data. Lower weights get preferred.
     float sensorAngleRad = species[speciesIndex].sensorAngleDegrees * (3.1415 / 180);
     float weightForward = sense(index, speciesIndex, 0);
     float weightLeft = sense(index, speciesIndex, sensorAngleRad);
@@ -126,18 +150,18 @@ void move_sensing(uint index) {
     float turnSpeed = species[speciesIndex].turnSpeed * 2 * 3.1415;
 
     // Continue in same direction
-    if (weightForward > weightLeft && weightForward > weightRight) {
+    if (weightForward <= weightLeft && weightForward <= weightRight) {
         slimes[index].angle += 0;
     }
-    else if (weightForward < weightLeft && weightForward < weightRight) {
+    else if (weightForward >= weightLeft && weightForward >= weightRight) {
         slimes[index].angle += (randomSteerStrength - 0.5) * 2 * turnSpeed;
     }
     // Turn right
-    else if (weightRight > weightLeft) {
+    else if (weightRight <= weightLeft) {
         slimes[index].angle -= randomSteerStrength * turnSpeed;
     }
     // Turn left
-    else if (weightLeft > weightRight) {
+    else if (weightLeft <= weightRight) {
         slimes[index].angle += randomSteerStrength * turnSpeed;
     }
 }
